@@ -1,1 +1,1 @@
-# 104isgd-devops-cfn-basic
+# cfn-basic-module
