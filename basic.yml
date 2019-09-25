@@ -1,0 +1,101 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: A basic template
+Parameters:
+  SlackWebhookURL:
+    Description:  send notify to slack webhook url
+    Type: String
+Resources:
+  EventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: all health event
+      EventPattern:
+        source:
+          - "aws.health" # Example: "aws.ec2"
+      State:  ENABLED
+      Targets: 
+        - 
+          Arn: 
+            Fn::GetAtt: 
+              - "LambdaFunction"
+              - "Arn"
+          Id: "TargetFunctionV1"
+  
+  PermissionForEventsToInvokeLambda: 
+    Type: AWS::Lambda::Permission
+    Properties: 
+      FunctionName: 
+        Ref: "LambdaFunction"
+      Action: "lambda:InvokeFunction"
+      Principal: "events.amazonaws.com"
+      SourceArn: 
+        Fn::GetAtt: 
+          - "EventRule"
+          - "Arn"
+          
+  LambdaExecutionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: "sts:AssumeRole"
+
+  LambdaFunction:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      Code: #required
+        ZipFile: |
+          import json
+          import os
+          from botocore.vendored import requests
+
+          def handler(event, context):
+              slack_webhook_url = os.environ['slack_webhook_url']
+
+              # HTTP POST Request
+
+              dict_headers = {'Content-type': 'application/json'}
+              dict_payload = {
+                  "username":"aws",
+                  "icon_url":"https://slack-files2.s3-us-west-2.amazonaws.com/avatars/2017-09-13/240092848416_0380058c9907aadf6079_72.png",
+                  "attachments":[
+                    {
+                      "fallback":"",
+                      "title": ":hammer_and_wrench: "+event['detail-type']+" | "+event['region']+" | Account: "+event['account'],
+                      "text": "Event type code: \n"+event['detail']['eventTypeCode']+"\n\n"+event['detail']['eventDescription'][0]['latestDescription'],
+                      "color": "warning",
+                      "fields":[
+                          {
+                            "title":"Service",
+                            "value":event['detail']['service'],
+                            "short":False
+                          },{
+                            "title":"Affected resource (showing 1 of "+str(len(event['detail']['affectedEntities']))+" affected)",
+                            "value":event['detail']['affectedEntities'][0]['entityValue'],
+                            "short":False
+                          }
+                      ]
+                    }
+                ]
+              }
+
+              rtn = requests.post(slack_webhook_url, data=json.dumps(dict_payload), headers=dict_headers)
+              print(rtn.text)
+              return {
+                'statusCode': 200,
+                'body': json.dumps('finished with success.')
+            }
+      Description: format event data and send message to slack channel
+      Environment: 
+        Variables:
+          slack_webhook_url: !Ref SlackWebhookURL
+      Handler: index.handler #required
+      Role: !GetAtt LambdaExecutionRole.Arn #required
+      Runtime: python3.6 #required
+      Timeout: 30
+  
+  

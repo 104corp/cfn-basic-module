@@ -1,0 +1,16 @@
+{
+  "name": "cfn-basic-module",
+  "version": "1.0.0",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/104corp/cfn-basic-module.git"
+  },
+  "author": "paul.chen",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/104corp/cfn-basic-module/issues"
+  },
+  "keywords": ["cfn-module", "cfn-basic-module"],
+  "homepage": "https://github.com/104corp/cfn-basic-module#readme"
+}
