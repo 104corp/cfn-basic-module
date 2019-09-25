@@ -8,8 +8,12 @@ Parameters:
   CloudTrailS3BucketName:
     Description:  cloudtrail s3 bucket name
     Type: String
+  AdminAccountId:
+    Description:  admin account id for assume role
+    Type: String
 Conditions:
   CreateHealthEventNotify: !Not [!Equals [ !Ref SlackWebhookURL, "" ]]
+  CreateAssumeRole: !Not [!Equals [ !Ref AdminAccountId, "" ]]
 Resources:
   EventRule:
     Type: AWS::Events::Rule
@@ -116,4 +120,34 @@ Resources:
       IsMultiRegionTrail: true
       IsLogging: true
 
+  AdministratorRole:
+    Type: "AWS::IAM::Role"
+    Condition: CreateAssumeRole
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            AWS: !Sub arn:aws:iam::${AdminAccountId}:root
+          Action:
+          - sts:AssumeRole #required
+      Description: administrator role
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AdministratorAccess
+      RoleName: Role-Administrator
 
+  OtterRole:
+    Type: "AWS::IAM::Role"
+    Condition: CreateAssumeRole
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            AWS: !Sub arn:aws:iam::${AdminAccountId}:root
+          Action:
+          - sts:AssumeRole #required
+      Description: otter role
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AdministratorAccess
+      RoleName: Role-Otter
