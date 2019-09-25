@@ -4,6 +4,9 @@ Parameters:
   SlackWebhookURL:
     Description:  send notify to slack webhook url
     Type: String
+  CloudTrailS3BucketName:
+    Description:  cloudtrail s3 bucket name
+    Type: String
 Resources:
   EventRule:
     Type: AWS::Events::Rule
@@ -98,4 +101,10 @@ Resources:
       Runtime: python3.6 #required
       Timeout: 30
   
-  
+  CloudTrail:
+    Type: AWS::CloudTrail::Trail
+    Properties:
+      S3BucketName: !Ref CloudTrailS3BucketName
+      IncludeGlobalServiceEvents: true
+      IsMultiRegionTrail: true
+      IsLogging: true
