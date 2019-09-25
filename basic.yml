@@ -1,3 +1,4 @@
+---
 AWSTemplateFormatVersion: "2010-09-09"
 Description: A basic template
 Parameters:
@@ -7,9 +8,12 @@ Parameters:
   CloudTrailS3BucketName:
     Description:  cloudtrail s3 bucket name
     Type: String
+Conditions:
+  CreateHealthEventNotify: !Not [!Equals [ !Ref SlackWebhookURL, "" ]]
 Resources:
   EventRule:
     Type: AWS::Events::Rule
+    Condition: CreateHealthEventNotify
     Properties:
       Description: all health event
       EventPattern:
@@ -26,6 +30,7 @@ Resources:
   
   PermissionForEventsToInvokeLambda: 
     Type: AWS::Lambda::Permission
+    Condition: CreateHealthEventNotify
     Properties: 
       FunctionName: 
         Ref: "LambdaFunction"
@@ -38,6 +43,7 @@ Resources:
           
   LambdaExecutionRole:
     Type: "AWS::IAM::Role"
+    Condition: CreateHealthEventNotify
     Properties:
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
@@ -49,6 +55,7 @@ Resources:
 
   LambdaFunction:
     Type: "AWS::Lambda::Function"
+    Condition: CreateHealthEventNotify
     Properties:
       Code: #required
         ZipFile: |
@@ -108,3 +115,5 @@ Resources:
       IncludeGlobalServiceEvents: true
       IsMultiRegionTrail: true
       IsLogging: true
+
+
