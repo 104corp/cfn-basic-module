@@ -8,6 +8,9 @@ Parameters:
   CloudTrailS3BucketName:
     Description:  cloudtrail s3 bucket name
     Type: String
+  ConfigS3BucketName:
+    Description:  aws config s3 bucket name
+    Type: String
   AdminAccountId:
     Description:  admin account id for assume role
     Type: String
@@ -16,7 +19,12 @@ Conditions:
   CreateAssumeRole: !Not [!Equals [ !Ref AdminAccountId, "" ]]
   CreateCloudTrailS3Bucket: !Equals [ !Ref CloudTrailS3BucketName, "" ]
   HasCloudTrailS3Bucket: !Not [!Equals [ !Ref CloudTrailS3BucketName, "" ]]
+  CreateConfigS3Bucket: !Equals [ !Ref ConfigS3BucketName, "" ]
+  HasConfigS3Bucket: !Not [!Equals [ !Ref ConfigS3BucketName, "" ]]
 Resources:
+
+## Health Event Notify ##
+
   EventRule:
     Type: AWS::Events::Rule
     Condition: CreateHealthEventNotify
@@ -113,7 +121,9 @@ Resources:
       Role: !GetAtt LambdaExecutionRole.Arn #required
       Runtime: python3.6 #required
       Timeout: 30
-  
+
+## CloudTrail ##
+
   CloudTrailS3Bucket:
     Type: "AWS::S3::Bucket"
     Condition: CreateCloudTrailS3Bucket
@@ -165,6 +175,8 @@ Resources:
       IsMultiRegionTrail: true
       IsLogging: true
 
+## Assume Role ##
+
   AdministratorRole:
     Type: "AWS::IAM::Role"
     Condition: CreateAssumeRole
@@ -196,4 +208,67 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AdministratorAccess
       RoleName: Role-Otter
+
+## Config ##
+
+  ConfigS3Bucket:
+    Type: "AWS::S3::Bucket"
+    Condition: CreateConfigS3Bucket
+
+  ConfigS3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Condition: CreateConfigS3Bucket
+    Properties: 
+      Bucket: !Ref ConfigS3Bucket
+      PolicyDocument: 
+        Version: '2012-10-17'
+        Statement:
+        - Sid: AWSConfigBucketPermissionsCheck
+          Effect: Allow
+          Principal:
+            Service: config.amazonaws.com
+          Action: "s3:GetBucketAcl"
+          Resource: !Sub
+                      - arn:aws:s3:::${BucketName}
+                      - {BucketName : !Ref ConfigS3Bucket}
+        - Sid: AWSConfigBucketDelivery
+          Effect: Allow
+          Principal:
+            Service: config.amazonaws.com
+          Action: "s3:PutObject"
+          Resource: !Sub
+                      - arn:aws:s3:::${BucketName}/AWSLogs/${AWS::AccountId}/Config/*
+                      - {BucketName : !Ref ConfigS3Bucket}
+          Condition:
+            StringEquals:
+              "s3:x-amz-acl": bucket-owner-full-control
+
+  ConfigRecorder:
+    Type: "AWS::Config::ConfigurationRecorder"
+    Properties:
+      RoleARN: !Sub arn:aws:iam::${AWS::AccountId}:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig #required
+  
+  ConfigDeliveryChannel:
+    Type: "AWS::Config::DeliveryChannel"
+    DependsOn: ConfigS3BucketPolicy
+    Condition: CreateConfigS3Bucket
+    Properties:
+      S3BucketName: !Ref ConfigS3Bucket #required
+  
+  ConfigDeliveryChannel:
+    Type: "AWS::Config::DeliveryChannel"
+    Condition: HasConfigS3Bucket
+    Properties:
+      S3BucketName: !Ref ConfigS3BucketName #required
+
+  ConfigRule:
+    Type: "AWS::Config::ConfigRule"
+    Properties:
+      Name: cloudtrail-enabled
+      Description: Checks whether AWS CloudTrail is enabled in your AWS account.
+      InputParameters:
+        s3BucketName: !If [HasCloudTrailS3Bucket, !Ref CloudTrailS3BucketName, !Ref CloudTrailS3Bucket]
+      Source: #required
+        Owner: AWS
+        SourceIdentifier: CLOUD_TRAIL_ENABLED
 
