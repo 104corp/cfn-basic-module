@@ -264,7 +264,7 @@ Resources:
   ConfigRule:
     Type: "AWS::Config::ConfigRule"
     Properties:
-      Name: cloudtrail-enabled
+      ConfigRuleName: cloudtrail-enabled
       Description: Checks whether AWS CloudTrail is enabled in your AWS account.
       InputParameters:
         s3BucketName: !If [HasCloudTrailS3Bucket, !Ref CloudTrailS3BucketName, !Ref CloudTrailS3Bucket]
