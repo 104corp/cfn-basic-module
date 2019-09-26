@@ -3,17 +3,17 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: A basic template
 Parameters:
   SlackWebhookURL:
-    Description:  send notify to slack webhook url
+    Description: (Optional) send notify to slack webhook url
     Type: String
   CloudTrailS3BucketName:
-    Description:  cloudtrail s3 bucket name
+    Description: (Optional) If you already have a cloudtrail s3 bucket
     Type: String
   ConfigS3BucketName:
-    Description:  aws config s3 bucket name
+    Description: (Optional) If you already have a aws config s3 bucket
     Type: String
   AdminAccountId:
     Type: String
-    Description: AWS Account Id of the administrator account for assume role
+    Description: (Optional) AWS Account Id of the administrator account for assume role
     MaxLength: 12
     MinLength: 12
 Conditions:
@@ -263,7 +263,7 @@ Resources:
     Properties:
       S3BucketName: !Ref ConfigS3BucketName #required
 
-  ConfigRule:
+  CloudTrailEnabledConfigRule:
     Type: "AWS::Config::ConfigRule"
     DependsOn: ConfigRecorder
     Properties:
