@@ -14,6 +14,8 @@ Parameters:
 Conditions:
   CreateHealthEventNotify: !Not [!Equals [ !Ref SlackWebhookURL, "" ]]
   CreateAssumeRole: !Not [!Equals [ !Ref AdminAccountId, "" ]]
+  CreateCloudTrailS3Bucket: !Equals [ !Ref CloudTrailS3BucketName, "" ]
+  HasCloudTrailS3Bucket: !Not [!Equals [ !Ref CloudTrailS3BucketName, "" ]]
 Resources:
   EventRule:
     Type: AWS::Events::Rule
@@ -112,8 +114,51 @@ Resources:
       Runtime: python3.6 #required
       Timeout: 30
   
+  CloudTrailS3Bucket:
+    Type: "AWS::S3::Bucket"
+    Condition: CreateCloudTrailS3Bucket
+
+  CloudTrailS3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Condition: CreateCloudTrailS3Bucket
+    Properties: 
+      Bucket: !Ref CloudTrailS3Bucket
+      PolicyDocument: 
+        Version: '2012-10-17'
+        Statement:
+        - Sid: AWSCloudTrailAclCheck20150319
+          Effect: Allow
+          Principal:
+            Service: cloudtrail.amazonaws.com
+          Action: "s3:GetBucketAcl"
+          Resource: !Sub
+                      - arn:aws:s3:::${BucketName}
+                      - {BucketName : !Ref CloudTrailS3Bucket}
+        - Sid: AWSCloudTrailWrite20150319
+          Effect: Allow
+          Principal:
+            Service: cloudtrail.amazonaws.com
+          Action: "s3:PutObject"
+          Resource: !Sub
+                      - arn:aws:s3:::${BucketName}/AWSLogs/${AWS::AccountId}/*
+                      - {BucketName : !Ref CloudTrailS3Bucket}
+          Condition:
+            StringEquals:
+              "s3:x-amz-acl": bucket-owner-full-control
+
   CloudTrail:
     Type: AWS::CloudTrail::Trail
+    DependsOn: CloudTrailS3BucketPolicy
+    Condition: CreateCloudTrailS3Bucket
+    Properties:
+      S3BucketName: !Ref CloudTrailS3Bucket
+      IncludeGlobalServiceEvents: true
+      IsMultiRegionTrail: true
+      IsLogging: true
+
+  CloudTrail:
+    Type: AWS::CloudTrail::Trail
+    Condition: HasCloudTrailS3Bucket
     Properties:
       S3BucketName: !Ref CloudTrailS3BucketName
       IncludeGlobalServiceEvents: true
@@ -151,3 +196,4 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AdministratorAccess
       RoleName: Role-Otter
+
