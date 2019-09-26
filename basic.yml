@@ -12,8 +12,10 @@ Parameters:
     Description:  aws config s3 bucket name
     Type: String
   AdminAccountId:
-    Description:  admin account id for assume role
     Type: String
+    Description: AWS Account Id of the administrator account for assume role
+    MaxLength: 12
+    MinLength: 12
 Conditions:
   CreateHealthEventNotify: !Not [!Equals [ !Ref SlackWebhookURL, "" ]]
   CreateAssumeRole: !Not [!Equals [ !Ref AdminAccountId, "" ]]
@@ -185,7 +187,7 @@ Resources:
         Statement:
         - Effect: Allow
           Principal:
-            AWS: !Sub arn:aws:iam::${AdminAccountId}:root
+            AWS: !Ref AdminAccountId
           Action:
           - sts:AssumeRole #required
       Description: administrator role
@@ -201,7 +203,7 @@ Resources:
         Statement:
         - Effect: Allow
           Principal:
-            AWS: !Sub arn:aws:iam::${AdminAccountId}:root
+            AWS: !Ref AdminAccountId
           Action:
           - sts:AssumeRole #required
       Description: otter role
@@ -263,6 +265,7 @@ Resources:
 
   ConfigRule:
     Type: "AWS::Config::ConfigRule"
+    DependsOn: ConfigRecorder
     Properties:
       ConfigRuleName: cloudtrail-enabled
       Description: Checks whether AWS CloudTrail is enabled in your AWS account.
