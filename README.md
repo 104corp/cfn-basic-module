@@ -4,9 +4,8 @@
 # cfn Basic module
 
 * CloudTrail
-* IAM Role
+* IAM Role for administrator 
     * Role-Administrator (AdministratorAccess)
-    * Role-Otter (AdministratorAccess)
 * AWS Config
 * AWS Health Event notify owner (slack)
 

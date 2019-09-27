@@ -192,22 +192,6 @@ Resources:
         - arn:aws:iam::aws:policy/AdministratorAccess
       RoleName: Role-Administrator
 
-  OtterRole:
-    Type: "AWS::IAM::Role"
-    Condition: CreateAssumeRole
-    Properties:
-      AssumeRolePolicyDocument:
-        Statement:
-          - Effect: Allow
-            Principal:
-              AWS: !Ref AdminAccountId
-            Action:
-              - sts:AssumeRole  # required
-      Description: otter role
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AdministratorAccess
-      RoleName: Role-Otter
-
   ## Config ##
   ConfigS3Bucket:
     Type: "AWS::S3::Bucket"
