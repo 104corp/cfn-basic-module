@@ -7,10 +7,10 @@ global:
 tests:
   scenario-no-param:
     parameter_input: no-param.json
-    template_file: module.yaml
+    template_file: module.yml
   scenario-with-bucket-name:
     parameter_input: with-bucket-name.json
-    template_file: module.yaml
+    template_file: module.yml
   scenario-create-role:
     parameter_input: create-role.json
-    template_file: module.yaml
+    template_file: module.yml
