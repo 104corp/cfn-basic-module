@@ -16,8 +16,7 @@ Parameters:
     Description:
       (Optional) AWS Account Id of the administrator account for assume role
     MaxLength: 12
-    MinLength: 12
-Conditions:
+Conditions: 
   CreateHealthEventNotify: !Not [!Equals [!Ref SlackWebhookURL, ""]]
   CreateAssumeRole: !Not [!Equals [!Ref AdminAccountId, ""]]
   CreateCloudTrailS3Bucket: !Equals [!Ref CloudTrailS3BucketName, ""]
