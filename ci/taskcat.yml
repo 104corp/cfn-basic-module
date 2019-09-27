@@ -3,11 +3,10 @@ global:
   qsname: cfn-basic-module
   regions:
     - ap-northeast-1
-  reporting: false
 tests:
   scenario-no-param:
     parameter_input: no-param.json
     template_file: module.yml
-  scenario-with-bucket-name:
+  scenario-create-role-config:
     parameter_input: create-role-config.json
     template_file: module.yml
