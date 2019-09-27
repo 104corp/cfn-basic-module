@@ -1,0 +1,18 @@
+[
+    {
+      "ParameterKey": "SlackWebhookURL",
+      "ParameterValue": ""
+    },
+    {
+      "ParameterKey": "CloudTrailS3BucketName",
+      "ParameterValue": "104traillog"
+    },
+    {
+      "ParameterKey": "ConfigS3BucketName",
+      "ParameterValue": ""
+    },
+    {
+      "ParameterKey": "AdminAccountId",
+      "ParameterValue": ""
+    }
+  ]

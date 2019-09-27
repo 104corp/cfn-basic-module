@@ -1,10 +1,16 @@
 global:
   owner: paul.chen@104.com.tw
   qsname: cfn-basic-module
+  regions:
+    - ap-northeast-1
   reporting: false
 tests:
-  test-scenario1:
-    parameter_input: input.json
+  scenario-no-param:
+    parameter_input: no-param.json
     template_file: module.yaml
-    regions:
-      - ap-northeast-1
+  scenario-with-bucket-name:
+    parameter_input: with-bucket-name.json
+    template_file: module.yaml
+  scenario-create-role:
+    parameter_input: create-role.json
+    template_file: module.yaml
