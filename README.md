@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/104corp/cfn-basic-module.svg?branch=master)](https://travis-ci.org/104corp/cfn-basic-module)
+[![Build Status](https://travis-ci.com/104corp/cfn-basic-module.svg?branch=master)](https://travis-ci.com/104corp/cfn-basic-module)
 [![NPM version](https://img.shields.io/npm/v/@104corp/cfn-basic-module.svg)](https://www.npmjs.com/package/@104corp/cfn-basic-module)
 
 # cfn Basic module
