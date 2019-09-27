@@ -1,0 +1,42 @@
+-----------------------------------------------------------------------------
+Region: ap-northeast-1
+StackName: tcat-tag-scenario-no-param-e5ec59db
+*****************************************************************************
+ResourceStatusReason:  
+The following resource(s) failed to create: [CloudTrailWithS3,
+ConfigDeliveryChannelWithS3].
+*****************************************************************************
+*****************************************************************************
+Events:  
+TimeStamp                         ResourceStatus      ResourceType                        LogicalResourceId                    ResourceStatusReason
+--------------------------------  ------------------  ----------------------------------  -----------------------------------  ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2019-09-27 07:20:37.380000+00:00  CREATE_FAILED       AWS::CloudFormation::Stack          tcat-tag-scenario-no-param-e5ec59db  The following resource(s) failed to create: [CloudTrailWithS3, ConfigDeliveryChannelWithS3].
+2019-09-27 07:20:36.629000+00:00  CREATE_FAILED       AWS::CloudTrail::Trail              CloudTrailWithS3                     Resource creation cancelled
+2019-09-27 07:20:36.456000+00:00  CREATE_IN_PROGRESS  AWS::CloudTrail::Trail              CloudTrailWithS3                     Resource creation Initiated
+2019-09-27 07:20:36.045000+00:00  CREATE_FAILED       AWS::Config::DeliveryChannel        ConfigDeliveryChannelWithS3          Failed to put delivery channel 'tcat-tag-scenario-no-param-e5ec59db-ConfigDeliveryChannelWithS3-4OTL07PC446' because the maximum number of delivery channels: 1 is reached. (Service: AmazonConfig; Status Code: 400; Error Code: MaxNumberOfDeliveryChannelsExceededException; Request ID: 1881900a-7e5e-4134-9b6a-0c6133fe536b)
+2019-09-27 07:20:35.669000+00:00  CREATE_IN_PROGRESS  AWS::CloudTrail::Trail              CloudTrailWithS3
+2019-09-27 07:20:35.650000+00:00  CREATE_IN_PROGRESS  AWS::Config::DeliveryChannel        ConfigDeliveryChannelWithS3
+2019-09-27 07:20:33.594000+00:00  CREATE_COMPLETE     AWS::S3::BucketPolicy               CloudTrailS3BucketPolicy
+2019-09-27 07:20:33.577000+00:00  CREATE_COMPLETE     AWS::S3::BucketPolicy               ConfigS3BucketPolicy
+2019-09-27 07:20:33.424000+00:00  CREATE_IN_PROGRESS  AWS::S3::BucketPolicy               CloudTrailS3BucketPolicy             Resource creation Initiated
+2019-09-27 07:20:33.400000+00:00  CREATE_IN_PROGRESS  AWS::S3::BucketPolicy               ConfigS3BucketPolicy                 Resource creation Initiated
+2019-09-27 07:20:32.129000+00:00  CREATE_COMPLETE     AWS::Config::ConfigRule             CloudTrailEnabledConfigRule
+2019-09-27 07:20:31.979000+00:00  CREATE_IN_PROGRESS  AWS::Config::ConfigRule             CloudTrailEnabledConfigRule          Resource creation Initiated
+2019-09-27 07:20:31.809000+00:00  CREATE_IN_PROGRESS  AWS::S3::BucketPolicy               ConfigS3BucketPolicy
+2019-09-27 07:20:31.276000+00:00  CREATE_IN_PROGRESS  AWS::Config::ConfigRule             CloudTrailEnabledConfigRule
+2019-09-27 07:20:31.181000+00:00  CREATE_IN_PROGRESS  AWS::S3::BucketPolicy               CloudTrailS3BucketPolicy
+2019-09-27 07:20:29.483000+00:00  CREATE_COMPLETE     AWS::S3::Bucket                     ConfigS3Bucket
+2019-09-27 07:20:29.056000+00:00  CREATE_COMPLETE     AWS::S3::Bucket                     CloudTrailS3Bucket
+2019-09-27 07:20:08.555000+00:00  CREATE_IN_PROGRESS  AWS::S3::Bucket                     ConfigS3Bucket                       Resource creation Initiated
+2019-09-27 07:20:08.371000+00:00  CREATE_IN_PROGRESS  AWS::S3::Bucket                     CloudTrailS3Bucket                   Resource creation Initiated
+2019-09-27 07:20:08.199000+00:00  CREATE_COMPLETE     AWS::Config::ConfigurationRecorder  ConfigRecorder
+2019-09-27 07:20:07.606000+00:00  CREATE_IN_PROGRESS  AWS::Config::ConfigurationRecorder  ConfigRecorder                       Resource creation Initiated
+2019-09-27 07:20:07.228000+00:00  CREATE_IN_PROGRESS  AWS::Config::ConfigurationRecorder  ConfigRecorder
+2019-09-27 07:20:07.150000+00:00  CREATE_IN_PROGRESS  AWS::S3::Bucket                     ConfigS3Bucket
+2019-09-27 07:20:06.769000+00:00  CREATE_IN_PROGRESS  AWS::S3::Bucket                     CloudTrailS3Bucket
+2019-09-27 07:20:02.924000+00:00  CREATE_IN_PROGRESS  AWS::CloudFormation::Stack          tcat-tag-scenario-no-param-e5ec59db  User Initiated
+*****************************************************************************
+-----------------------------------------------------------------------------
+Tested on: Friday, 27. September 2019 03:21PM
+-----------------------------------------------------------------------------
+

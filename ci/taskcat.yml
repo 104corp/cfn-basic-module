@@ -9,8 +9,5 @@ tests:
     parameter_input: no-param.json
     template_file: module.yml
   scenario-with-bucket-name:
-    parameter_input: with-bucket-name.json
-    template_file: module.yml
-  scenario-create-role:
-    parameter_input: create-role.json
+    parameter_input: create-role-config.json
     template_file: module.yml

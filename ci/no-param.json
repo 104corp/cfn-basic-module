@@ -8,6 +8,10 @@
       "ParameterValue": ""
     },
     {
+      "ParameterKey": "EnableConfigService",
+      "ParameterValue": "false"
+    },
+    {
       "ParameterKey": "ConfigS3BucketName",
       "ParameterValue": ""
     },

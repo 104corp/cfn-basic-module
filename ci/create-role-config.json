@@ -5,7 +5,11 @@
     },
     {
       "ParameterKey": "CloudTrailS3BucketName",
-      "ParameterValue": "104traillog"
+      "ParameterValue": ""
+    },
+    {
+      "ParameterKey": "EnableConfigService",
+      "ParameterValue": "true"
     },
     {
       "ParameterKey": "ConfigS3BucketName",
@@ -13,6 +17,6 @@
     },
     {
       "ParameterKey": "AdminAccountId",
-      "ParameterValue": ""
+      "ParameterValue": "123456789012"
     }
   ]

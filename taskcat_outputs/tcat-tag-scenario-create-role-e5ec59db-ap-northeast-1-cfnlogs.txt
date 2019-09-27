@@ -1,0 +1,28 @@
+-----------------------------------------------------------------------------
+Region: ap-northeast-1
+StackName: tcat-tag-scenario-create-role-e5ec59db
+*****************************************************************************
+ResourceStatusReason:  
+The following resource(s) failed to create: [ConfigS3Bucket, CloudTrailS3Bucket,
+AdministratorRole, ConfigRecorder].
+*****************************************************************************
+*****************************************************************************
+Events:  
+TimeStamp                         ResourceStatus      ResourceType                        LogicalResourceId                       ResourceStatusReason
+--------------------------------  ------------------  ----------------------------------  --------------------------------------  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2019-09-27 07:20:09.672000+00:00  CREATE_FAILED       AWS::CloudFormation::Stack          tcat-tag-scenario-create-role-e5ec59db  The following resource(s) failed to create: [ConfigS3Bucket, CloudTrailS3Bucket, AdministratorRole, ConfigRecorder].
+2019-09-27 07:20:08.760000+00:00  CREATE_FAILED       AWS::S3::Bucket                     ConfigS3Bucket                          Resource creation cancelled
+2019-09-27 07:20:08.413000+00:00  CREATE_FAILED       AWS::IAM::Role                      AdministratorRole                       Invalid principal in policy: "AWS":"123456789012" (Service: AmazonIdentityManagement; Status Code: 400; Error Code: MalformedPolicyDocument; Request ID: 3c276754-e0f7-11e9-b8b3-c1ec48176a52)
+2019-09-27 07:20:08.395000+00:00  CREATE_FAILED       AWS::S3::Bucket                     CloudTrailS3Bucket                      Resource creation cancelled
+2019-09-27 07:20:08.240000+00:00  CREATE_IN_PROGRESS  AWS::S3::Bucket                     CloudTrailS3Bucket                      Resource creation Initiated
+2019-09-27 07:20:07.935000+00:00  CREATE_FAILED       AWS::Config::ConfigurationRecorder  ConfigRecorder                          Failed to put configuration recorder 'tcat-tag-scenario-create-role-e5ec59db-ConfigRecorder-GRQEVZ5TQWTF' because the maximum number of configuration recorders: 1 is reached. (Service: AmazonConfig; Status Code: 400; Error Code: MaxNumberOfConfigurationRecordersExceededException; Request ID: d25ea885-97a1-4535-aa7d-40c69e8ebf4d)
+2019-09-27 07:20:07.564000+00:00  CREATE_IN_PROGRESS  AWS::Config::ConfigurationRecorder  ConfigRecorder
+2019-09-27 07:20:07.547000+00:00  CREATE_IN_PROGRESS  AWS::IAM::Role                      AdministratorRole
+2019-09-27 07:20:07.328000+00:00  CREATE_IN_PROGRESS  AWS::S3::Bucket                     ConfigS3Bucket
+2019-09-27 07:20:06.662000+00:00  CREATE_IN_PROGRESS  AWS::S3::Bucket                     CloudTrailS3Bucket
+2019-09-27 07:20:03.733000+00:00  CREATE_IN_PROGRESS  AWS::CloudFormation::Stack          tcat-tag-scenario-create-role-e5ec59db  User Initiated
+*****************************************************************************
+-----------------------------------------------------------------------------
+Tested on: Friday, 27. September 2019 03:21PM
+-----------------------------------------------------------------------------
+

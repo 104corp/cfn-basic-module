@@ -8,6 +8,13 @@ Parameters:
   CloudTrailS3BucketName:
     Description: (Optional) If you already have a cloudtrail s3 bucket
     Type: String
+  EnableConfigService:
+    Description: (Optional) enable config service or not
+    Type: String
+    Default: false
+    AllowedValues: 
+      - true
+      - false
   ConfigS3BucketName:
     Description: (Optional) If you already have a aws config s3 bucket
     Type: String
@@ -21,8 +28,13 @@ Conditions:
   CreateAssumeRole: !Not [!Equals [!Ref AdminAccountId, ""]]
   CreateCloudTrailS3Bucket: !Equals [!Ref CloudTrailS3BucketName, ""]
   HasCloudTrailS3Bucket: !Not [!Equals [!Ref CloudTrailS3BucketName, ""]]
-  CreateConfigS3Bucket: !Equals [!Ref ConfigS3BucketName, ""]
-  HasConfigS3Bucket: !Not [!Equals [!Ref ConfigS3BucketName, ""]]
+  CreateConfig: !Equals [!Ref EnableConfigService, true]
+  CreateConfigS3Bucket: !And
+    - !Condition CreateConfig
+    - !Equals [!Ref ConfigS3BucketName, ""]
+  HasConfigS3Bucket: !And
+    - !Condition CreateConfig
+    - !Not [!Equals [!Ref ConfigS3BucketName, ""]]
 Resources:
 
   ## Health Event Notify ##
@@ -227,6 +239,7 @@ Resources:
 
   ConfigRecorder:
     Type: "AWS::Config::ConfigurationRecorder"
+    Condition: CreateConfig
     Properties:
       RoleARN: !Sub arn:aws:iam::${AWS::AccountId}:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig #required
   
@@ -246,6 +259,7 @@ Resources:
   CloudTrailEnabledConfigRule:
     Type: "AWS::Config::ConfigRule"
     DependsOn: ConfigRecorder
+    Condition: CreateConfig
     Properties:
       ConfigRuleName: cloudtrail-enabled
       Description: Checks whether AWS CloudTrail is enabled in your AWS account.
