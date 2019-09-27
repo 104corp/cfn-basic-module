@@ -1,13 +1,11 @@
----
 language: python
 services:
-  - docker
+- docker
 install:
-  - pip install -r requirements.txt
-  - curl -s https://raw.githubusercontent.com/aws-quickstart/taskcat/master/installer/docker-installer.sh
+- pip install -r requirements.txt
+- curl -s https://raw.githubusercontent.com/aws-quickstart/taskcat/master/installer/docker-installer.sh
 script:
-  - taskcat -c ci/taskcat.yml
-
+- taskcat -c ci/taskcat.yml
 notifications:
   slack:
-    secure: z+Y78wFtnLir0NEJOlQ9Ry+IXnsf9TpMXRgAhJVYTAlD0hLhYycPpcptObd7SkWBp0Fh9FdsuNJArAt+H+Bs3YGkCO70ZhjKdIfTXdOp8bk2lO0Szf0H8gKhT+9hw2gV1IxdhOCsztuSeVyLfMyAKhKRwfm+vE9bYdeENHsDOXyzFji1TAELxlODWGj5SWcEU0qB2IPJw2Jc9631QnzSKa86XM5Ov90vG01bF2ILq2RAIADphH+oVthKJubK+JKaURtnNBff94uV3hG2w+cF99Me1Lseg2MH45UAt1Y47PKgodXAJ/rBhmjGyWKrmm3rBtvSXx5IQY5ka3VgkSCjxT8n9CnNOdSDV/w6U/UlazNeMDmWzluWwFcgV3oErS9NG2GpMKEmH6FvILHRIIn+KrRAeKwSEIrmiEYAj3uf+8AjJvVEqHUB13mh1HICP/pPsaJpzk+eBa1sNJsj/iarspUOhO/Yso/QynckGp27Pyi8NVgQYjQdJLs9n4eoSPFpx/wVlUVOu9aVPwENUOquQBSZ4lBBLagEibnOrepLEV7kI3ttO3ch4BTAVRiSyYUzM7uIkFxm3GEGqvfVHbia2+5RkrozdD/m12ir2qDbqXprwQIgBfZ83KKOoMjIf9dTsd6g1IKSspN/5rem2UrL5p4InK3O0fHcqHZLkPg6zCM=
+    secure: Ed+sjgo+rdLfzrzbFZg14PaLEFJdLRNEnnPeM/NLp5Ak8i1jxRstmvKjLmSgYK9R6jV7SeTumsQhqWMmFwWjxMkajw522bQ/JiR4D/9tvQlyDCdgHBX+tPb74OYy0vIG5unPBHd3yd7g718FJ9/9rsrhfIoCxBGvZTQsX/HKkVudipqFrB+ey+wsHyNP99Q1pYlln4OKmX2et5qRWFkVOhiKvxfto/ssVp1W2WsHdnHDw/2wBmete/5UH1Q8oGI2Ow6DdECEvPyWZmKwIml2mgoKATaqIbdKjWgAOOMy0q0sLLXf3XdijoJsayo3NBb/HdEA8VTh6i2h4/oXO6JL+4MZr2Jj0cZ7yw9BmJV6batIogLJ54x8HhEIIag/wU3otjcwczUQY7ReqBC7to4GGrFEwLSiV9g9NYP7mqkLlV44GiRinfTYqb3H+wABC52UF1DrQg/tdtnDtAqY7z6TneLWFFBiN+2yfEjHIj9FlT6i5QrU/zjRU9ea/2mvRcE+zHutIZfYRLM/ZaiewsKMRwegqoMsDeKNduDWhOn8wb+rW00KtaO/z/DBIIxphMLyVret8F9O1h2KoL6a7ixH9ZAbYHzlW5Bq/vaStUx5TiPjBdF1otgn1Mp5ZfZAgeUDGrZ/WHHli3zoKHBMqom3elzA9s6XK6uZLcf0rHgiaDg=
