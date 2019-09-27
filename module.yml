@@ -13,20 +13,20 @@ Parameters:
     Type: String
   AdminAccountId:
     Type: String
-    Description: (Optional) AWS Account Id of the administrator account for assume role
+    Description:
+      (Optional) AWS Account Id of the administrator account for assume role
     MaxLength: 12
     MinLength: 12
 Conditions:
-  CreateHealthEventNotify: !Not [!Equals [ !Ref SlackWebhookURL, "" ]]
-  CreateAssumeRole: !Not [!Equals [ !Ref AdminAccountId, "" ]]
-  CreateCloudTrailS3Bucket: !Equals [ !Ref CloudTrailS3BucketName, "" ]
-  HasCloudTrailS3Bucket: !Not [!Equals [ !Ref CloudTrailS3BucketName, "" ]]
-  CreateConfigS3Bucket: !Equals [ !Ref ConfigS3BucketName, "" ]
-  HasConfigS3Bucket: !Not [!Equals [ !Ref ConfigS3BucketName, "" ]]
+  CreateHealthEventNotify: !Not [!Equals [!Ref SlackWebhookURL, ""]]
+  CreateAssumeRole: !Not [!Equals [!Ref AdminAccountId, ""]]
+  CreateCloudTrailS3Bucket: !Equals [!Ref CloudTrailS3BucketName, ""]
+  HasCloudTrailS3Bucket: !Not [!Equals [!Ref CloudTrailS3BucketName, ""]]
+  CreateConfigS3Bucket: !Equals [!Ref ConfigS3BucketName, ""]
+  HasConfigS3Bucket: !Not [!Equals [!Ref ConfigS3BucketName, ""]]
 Resources:
 
-## Health Event Notify ##
-
+  ## Health Event Notify ##
   EventRule:
     Type: AWS::Events::Rule
     Condition: CreateHealthEventNotify
@@ -34,29 +34,29 @@ Resources:
       Description: all health event
       EventPattern:
         source:
-          - "aws.health" # Example: "aws.ec2"
-      State:  ENABLED
-      Targets: 
-        - 
-          Arn: 
-            Fn::GetAtt: 
+          - "aws.health"
+      State: ENABLED
+      Targets:
+        -
+          Arn:
+            Fn::GetAtt:
               - "LambdaFunction"
               - "Arn"
           Id: "TargetFunctionV1"
-  
-  PermissionForEventsToInvokeLambda: 
+
+  PermissionForEventsToInvokeLambda:
     Type: AWS::Lambda::Permission
     Condition: CreateHealthEventNotify
-    Properties: 
-      FunctionName: 
+    Properties:
+      FunctionName:
         Ref: "LambdaFunction"
       Action: "lambda:InvokeFunction"
       Principal: "events.amazonaws.com"
-      SourceArn: 
-        Fn::GetAtt: 
+      SourceArn:
+        Fn::GetAtt:
           - "EventRule"
           - "Arn"
-          
+
   LambdaExecutionRole:
     Type: "AWS::IAM::Role"
     Condition: CreateHealthEventNotify
@@ -73,7 +73,7 @@ Resources:
     Type: "AWS::Lambda::Function"
     Condition: CreateHealthEventNotify
     Properties:
-      Code: #required
+      Code:  # required
         ZipFile: |
           import json
           import os
@@ -116,16 +116,15 @@ Resources:
                 'body': json.dumps('finished with success.')
             }
       Description: format event data and send message to slack channel
-      Environment: 
+      Environment:
         Variables:
           slack_webhook_url: !Ref SlackWebhookURL
-      Handler: index.handler #required
-      Role: !GetAtt LambdaExecutionRole.Arn #required
-      Runtime: python3.6 #required
+      Handler: index.handler  # required
+      Role: !GetAtt LambdaExecutionRole.Arn  # required
+      Runtime: python3.6  # required
       Timeout: 30
 
-## CloudTrail ##
-
+  ## CloudTrail ##
   CloudTrailS3Bucket:
     Type: "AWS::S3::Bucket"
     Condition: CreateCloudTrailS3Bucket
@@ -133,40 +132,30 @@ Resources:
   CloudTrailS3BucketPolicy:
     Type: AWS::S3::BucketPolicy
     Condition: CreateCloudTrailS3Bucket
-    Properties: 
+    Properties:
       Bucket: !Ref CloudTrailS3Bucket
-      PolicyDocument: 
+      PolicyDocument:
         Version: '2012-10-17'
         Statement:
-        - Sid: AWSCloudTrailAclCheck20150319
-          Effect: Allow
-          Principal:
-            Service: cloudtrail.amazonaws.com
-          Action: "s3:GetBucketAcl"
-          Resource: !Sub
-                      - arn:aws:s3:::${BucketName}
-                      - {BucketName : !Ref CloudTrailS3Bucket}
-        - Sid: AWSCloudTrailWrite20150319
-          Effect: Allow
-          Principal:
-            Service: cloudtrail.amazonaws.com
-          Action: "s3:PutObject"
-          Resource: !Sub
-                      - arn:aws:s3:::${BucketName}/AWSLogs/${AWS::AccountId}/*
-                      - {BucketName : !Ref CloudTrailS3Bucket}
-          Condition:
-            StringEquals:
-              "s3:x-amz-acl": bucket-owner-full-control
-
-  CloudTrail:
-    Type: AWS::CloudTrail::Trail
-    DependsOn: CloudTrailS3BucketPolicy
-    Condition: CreateCloudTrailS3Bucket
-    Properties:
-      S3BucketName: !Ref CloudTrailS3Bucket
-      IncludeGlobalServiceEvents: true
-      IsMultiRegionTrail: true
-      IsLogging: true
+          - Sid: AWSCloudTrailAclCheck20150319
+            Effect: Allow
+            Principal:
+              Service: cloudtrail.amazonaws.com
+            Action: "s3:GetBucketAcl"
+            Resource: !Sub
+              - arn:aws:s3:::${BucketName}
+              - {BucketName: !Ref CloudTrailS3Bucket}
+          - Sid: AWSCloudTrailWrite20150319
+            Effect: Allow
+            Principal:
+              Service: cloudtrail.amazonaws.com
+            Action: "s3:PutObject"
+            Resource: !Sub
+              - arn:aws:s3:::${BucketName}/AWSLogs/${AWS::AccountId}/*
+              - {BucketName: !Ref CloudTrailS3Bucket}
+            Condition:
+              StringEquals:
+                "s3:x-amz-acl": bucket-owner-full-control
 
   CloudTrail:
     Type: AWS::CloudTrail::Trail
@@ -177,19 +166,28 @@ Resources:
       IsMultiRegionTrail: true
       IsLogging: true
 
-## Assume Role ##
+  CloudTrailWithS3:
+    Type: AWS::CloudTrail::Trail
+    DependsOn: CloudTrailS3BucketPolicy
+    Condition: CreateCloudTrailS3Bucket
+    Properties:
+      S3BucketName: !Ref CloudTrailS3Bucket
+      IncludeGlobalServiceEvents: true
+      IsMultiRegionTrail: true
+      IsLogging: true
 
+  ## Assume Role ##
   AdministratorRole:
     Type: "AWS::IAM::Role"
     Condition: CreateAssumeRole
     Properties:
       AssumeRolePolicyDocument:
         Statement:
-        - Effect: Allow
-          Principal:
-            AWS: !Ref AdminAccountId
-          Action:
-          - sts:AssumeRole #required
+          - Effect: Allow
+            Principal:
+              AWS: !Ref AdminAccountId
+            Action:
+              - sts:AssumeRole  # required
       Description: administrator role
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AdministratorAccess
@@ -201,18 +199,17 @@ Resources:
     Properties:
       AssumeRolePolicyDocument:
         Statement:
-        - Effect: Allow
-          Principal:
-            AWS: !Ref AdminAccountId
-          Action:
-          - sts:AssumeRole #required
+          - Effect: Allow
+            Principal:
+              AWS: !Ref AdminAccountId
+            Action:
+              - sts:AssumeRole  # required
       Description: otter role
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AdministratorAccess
       RoleName: Role-Otter
 
-## Config ##
-
+  ## Config ##
   ConfigS3Bucket:
     Type: "AWS::S3::Bucket"
     Condition: CreateConfigS3Bucket
@@ -220,30 +217,30 @@ Resources:
   ConfigS3BucketPolicy:
     Type: AWS::S3::BucketPolicy
     Condition: CreateConfigS3Bucket
-    Properties: 
+    Properties:
       Bucket: !Ref ConfigS3Bucket
-      PolicyDocument: 
+      PolicyDocument:
         Version: '2012-10-17'
         Statement:
-        - Sid: AWSConfigBucketPermissionsCheck
-          Effect: Allow
-          Principal:
-            Service: config.amazonaws.com
-          Action: "s3:GetBucketAcl"
-          Resource: !Sub
-                      - arn:aws:s3:::${BucketName}
-                      - {BucketName : !Ref ConfigS3Bucket}
-        - Sid: AWSConfigBucketDelivery
-          Effect: Allow
-          Principal:
-            Service: config.amazonaws.com
-          Action: "s3:PutObject"
-          Resource: !Sub
-                      - arn:aws:s3:::${BucketName}/AWSLogs/${AWS::AccountId}/Config/*
-                      - {BucketName : !Ref ConfigS3Bucket}
-          Condition:
-            StringEquals:
-              "s3:x-amz-acl": bucket-owner-full-control
+          - Sid: AWSConfigBucketPermissionsCheck
+            Effect: Allow
+            Principal:
+              Service: config.amazonaws.com
+            Action: "s3:GetBucketAcl"
+            Resource: !Sub
+              - arn:aws:s3:::${BucketName}
+              - {BucketName: !Ref ConfigS3Bucket}
+          - Sid: AWSConfigBucketDelivery
+            Effect: Allow
+            Principal:
+              Service: config.amazonaws.com
+            Action: "s3:PutObject"
+            Resource: !Sub
+              - arn:aws:s3:::${BucketName}/AWSLogs/${AWS::AccountId}/Config/*
+              - {BucketName : !Ref ConfigS3Bucket}
+            Condition:
+              StringEquals:
+                "s3:x-amz-acl": bucket-owner-full-control
 
   ConfigRecorder:
     Type: "AWS::Config::ConfigurationRecorder"
@@ -252,17 +249,17 @@ Resources:
   
   ConfigDeliveryChannel:
     Type: "AWS::Config::DeliveryChannel"
+    Condition: HasConfigS3Bucket
+    Properties:
+      S3BucketName: !Ref ConfigS3BucketName  # required
+  
+  ConfigDeliveryChannelWithS3:
+    Type: "AWS::Config::DeliveryChannel"
     DependsOn: ConfigS3BucketPolicy
     Condition: CreateConfigS3Bucket
     Properties:
-      S3BucketName: !Ref ConfigS3Bucket #required
+      S3BucketName: !Ref ConfigS3Bucket  # required
   
-  ConfigDeliveryChannel:
-    Type: "AWS::Config::DeliveryChannel"
-    Condition: HasConfigS3Bucket
-    Properties:
-      S3BucketName: !Ref ConfigS3BucketName #required
-
   CloudTrailEnabledConfigRule:
     Type: "AWS::Config::ConfigRule"
     DependsOn: ConfigRecorder
@@ -271,7 +268,7 @@ Resources:
       Description: Checks whether AWS CloudTrail is enabled in your AWS account.
       InputParameters:
         s3BucketName: !If [HasCloudTrailS3Bucket, !Ref CloudTrailS3BucketName, !Ref CloudTrailS3Bucket]
-      Source: #required
+      Source:  # required
         Owner: AWS
         SourceIdentifier: CLOUD_TRAIL_ENABLED
 
