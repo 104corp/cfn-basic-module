@@ -1,0 +1,10 @@
+global:
+  owner: paul.chen@104.com.tw
+  qsname: cfn-basic-module
+  reporting: false
+tests:
+  test-scenario1:
+    parameter_input: input.json
+    template_file: module.yaml
+    regions:
+      - ap-northeast-1
