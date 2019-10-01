@@ -1,6 +1,6 @@
 {
-  "name": "cfn-basic-module",
-  "version": "1.0.0",
+  "name": "@104corp/cfn-basic-module",
+  "version": "0.0.1",
   "description": "",
   "repository": {
     "type": "git",
@@ -11,6 +11,11 @@
   "bugs": {
     "url": "https://github.com/104corp/cfn-basic-module/issues"
   },
-  "keywords": ["cfn-module", "cfn-basic-module"],
-  "homepage": "https://github.com/104corp/cfn-basic-module#readme"
+  "keywords": [
+    "cfn-basic-module"
+  ],
+  "homepage": "https://github.com/104corp/cfn-basic-module#readme",
+  "publishConfig": {
+    "access": "public"
+  }
 }
