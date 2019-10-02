@@ -110,15 +110,18 @@ Resources:
                             "title":"Service",
                             "value":event['detail']['service'],
                             "short":False
-                          },{
-                            "title":"Affected resource (showing 1 of "+str(len(event['detail']['affectedEntities']))+" affected)",
-                            "value":event['detail']['affectedEntities'][0]['entityValue'],
-                            "short":False
                           }
                       ]
                     }
                 ]
               }
+
+              if 'affectedEntities' in event['detail']:
+                  dict_payload['attachments'][0]['fields'].append({
+                                "title":"Affected resource (showing 1 of "+str(len(event['detail']['affectedEntities']))+" affected)",
+                                "value":event['detail']['affectedEntities'][0]['entityValue'],
+                                "short":False
+                              })
 
               rtn = requests.post(slack_webhook_url, data=json.dumps(dict_payload), headers=dict_headers)
               print(rtn.text)
