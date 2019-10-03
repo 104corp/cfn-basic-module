@@ -240,11 +240,18 @@ Resources:
               StringEquals:
                 "s3:x-amz-acl": bucket-owner-full-control
 
+  AWSServiceRoleForConfig:
+    Type: AWS::IAM::ServiceLinkedRole
+    Properties: 
+      AWSServiceName: config.amazonaws.com
+      Description: Allows Config to call AWS services and collect resource configurations on your behalf.
+
   ConfigRecorder:
     Type: "AWS::Config::ConfigurationRecorder"
+    DependsOn: AWSServiceRoleForConfig
     Condition: CreateConfig
     Properties:
-      RoleARN: !Sub arn:aws:iam::${AWS::AccountId}:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig #required
+      RoleARN: !Ref AWSServiceRoleForConfig #required
   
   ConfigDeliveryChannel:
     Type: "AWS::Config::DeliveryChannel"
@@ -271,4 +278,3 @@ Resources:
       Source:  # required
         Owner: AWS
         SourceIdentifier: CLOUD_TRAIL_ENABLED
-
