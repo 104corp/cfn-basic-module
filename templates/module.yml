@@ -242,6 +242,7 @@ Resources:
 
   AWSServiceRoleForConfig:
     Type: AWS::IAM::ServiceLinkedRole
+    Condition: CreateConfig
     Properties: 
       AWSServiceName: config.amazonaws.com
       Description: Allows Config to call AWS services and collect resource configurations on your behalf.
