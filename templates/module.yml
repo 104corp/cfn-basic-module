@@ -251,7 +251,9 @@ Resources:
     DependsOn: AWSServiceRoleForConfig
     Condition: CreateConfig
     Properties:
-      RoleARN: !Ref AWSServiceRoleForConfig #required
+      RoleARN: Fn::GetAtt: 
+                  - AWSServiceRoleForConfig
+                  - Arn #required
   
   ConfigDeliveryChannel:
     Type: "AWS::Config::DeliveryChannel"
