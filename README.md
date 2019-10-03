@@ -36,5 +36,17 @@ Resources:
       TemplateURL: './node_modules/@104corp/cfn-basic-module/module.yml'
 ```
 
+## Package
+
+```
+$ aws cloudformation package --template-file example.yml --s3-bucket <your cfn template bucket> --output-template-file packaged.yml
+```
+
+## Deploy
+
+```
+$ aws cloudformation deploy --template-file packaged.yml --stack-name <your stack name>
+```
+
 ## Parameters
 
