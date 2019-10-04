@@ -1,10 +1,11 @@
 ---
 AWSTemplateFormatVersion: "2010-09-09"
 Description: A basic template
-Parameters:
+e:
   SlackWebhookURL:
     Description: (Optional) send notify to slack webhook url
     Type: String
+    Default: "None"
   CloudTrailS3BucketName:
     Description: (Optional) If you already have a cloudtrail s3 bucket
     Type: String
@@ -24,7 +25,7 @@ Parameters:
       (Optional) AWS Account Id of the administrator account for assume role
     MaxLength: 12
 Conditions: 
-  CreateHealthEventNotify: !Not [!Equals [!Ref SlackWebhookURL, ""]]
+  CreateHealthEventNotify: !Not [!Equals [!Ref SlackWebhookURL, "None"]]
   CreateAssumeRole: !Not [!Equals [!Ref AdminAccountId, ""]]
   CreateCloudTrailS3Bucket: !Equals [!Ref CloudTrailS3BucketName, ""]
   HasCloudTrailS3Bucket: !Not [!Equals [!Ref CloudTrailS3BucketName, ""]]

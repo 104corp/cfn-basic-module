@@ -7,6 +7,10 @@ install:
 script:
 - taskcat -c ci/taskcat.yml
 
+after_script:
+- pip install boto3
+- python clear_up_fail_stacks.py
+
 deploy:
   provider: npm
   email: $NPM_EMAIL
