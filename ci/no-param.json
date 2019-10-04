@@ -1,7 +1,7 @@
 [
     {
       "ParameterKey": "SlackWebhookURL",
-      "ParameterValue": ""
+      "ParameterValue": "None"
     },
     {
       "ParameterKey": "CloudTrailS3BucketName",
