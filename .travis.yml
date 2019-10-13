@@ -1,6 +1,9 @@
 language: python
 services:
 - docker
+branches:
+  only:
+  - master
 install:
 - pip install -r requirements.txt
 - curl -s https://raw.githubusercontent.com/aws-quickstart/taskcat/master/installer/docker-installer.sh
