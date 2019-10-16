@@ -1,7 +1,7 @@
-[![Build Status](https://travis-ci.com/104corp/cfn-basic-module.svg?branch=master)](https://travis-ci.com/104corp/cfn-basic-module)
-[![NPM version](https://img.shields.io/npm/v/@104corp/cfn-basic-module.svg)](https://www.npmjs.com/package/@104corp/cfn-basic-module)
+# CloudFormation Basic module
 
-# cfn Basic module
+[![Build Status](https://travis-ci.com/104corp/cfn-basic-module.svg?branch=master)](https://travis-ci.com/104corp/104isgd-devops-cfn-basic.svg?token=XzF5xSuVcyG4W3apP4Dr&branch=master)
+[![NPM version](https://img.shields.io/npm/v/@104corp/cfn-basic-module.svg)](https://www.npmjs.com/package/@104corp/cfn-basic-module)
 
 * CloudTrail
 * IAM Role for administrator 
@@ -50,3 +50,70 @@ $ aws cloudformation deploy --template-file packaged.yml --stack-name <your stac
 
 ## Parameters
 
+# templates/module
+# Description
+A basic template
+
+## Parameters
+The list of parameters for this template:
+
+### SlackWebhookURL 
+Type: String 
+Default: None 
+Description: (Optional) send notify to slack webhook url 
+### CloudTrailS3BucketName 
+Type: String  
+Description: (Optional) If you already have a cloudtrail s3 bucket 
+### EnableConfigService 
+Type: String  
+Description: (Optional) enable config service or not 
+### ConfigS3BucketName 
+Type: String  
+Description: (Optional) If you already have a aws config s3 bucket 
+### AdminAccountId 
+Type: String  
+Description: (Optional) AWS Account Id of the administrator account for assume role 
+
+## Resources
+The list of resources this template creates:
+
+### EventRule 
+Type: AWS::Events::Rule  
+### PermissionForEventsToInvokeLambda 
+Type: AWS::Lambda::Permission  
+### LambdaExecutionRole 
+Type: AWS::IAM::Role  
+### LambdaFunction 
+Type: AWS::Lambda::Function  
+### CloudTrailS3Bucket 
+Type: AWS::S3::Bucket  
+### CloudTrailS3BucketPolicy 
+Type: AWS::S3::BucketPolicy  
+### CloudTrail 
+Type: AWS::CloudTrail::Trail  
+### CloudTrailWithS3 
+Type: AWS::CloudTrail::Trail  
+### AdministratorRole 
+Type: AWS::IAM::Role  
+### ConfigS3Bucket 
+Type: AWS::S3::Bucket  
+### ConfigS3BucketPolicy 
+Type: AWS::S3::BucketPolicy  
+### AWSServiceRoleForConfig 
+Type: AWS::IAM::ServiceLinkedRole  
+### ConfigRecorder 
+Type: AWS::Config::ConfigurationRecorder  
+### ConfigDeliveryChannel 
+Type: AWS::Config::DeliveryChannel  
+### ConfigDeliveryChannelWithS3 
+Type: AWS::Config::DeliveryChannel  
+### CloudTrailEnabledConfigRule 
+Type: AWS::Config::ConfigRule  
+
+## Outputs
+The list of outputs this template exposes:
+
+## Maintenance
+
+Maintainers:
+  - `104corp`
