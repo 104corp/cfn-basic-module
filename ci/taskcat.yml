@@ -4,9 +4,9 @@ global:
   regions:
     - ap-northeast-1
 tests:
-  scenario-no-param:
+  basic-scenario-no-param:
     parameter_input: no-param.json
     template_file: module.yml
-  scenario-create-role-config:
+  basic-scenario-create-role-config:
     parameter_input: create-role-config.json
     template_file: module.yml
