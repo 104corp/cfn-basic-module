@@ -1,6 +1,6 @@
 import boto3
 
-client = boto3.client('cloudformation')
+client = boto3.client('cloudformation', 'ap-northeast-1')
 
 response = client.list_stacks(
     StackStatusFilter=['DELETE_FAILED']
