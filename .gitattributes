@@ -1,1 +1,2 @@
 *.yaml eol=lf
+*.yml eol=lf
