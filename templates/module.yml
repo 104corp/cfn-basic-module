@@ -280,3 +280,28 @@ Resources:
       Source:  # required
         Owner: AWS
         SourceIdentifier: CLOUD_TRAIL_ENABLED
+
+  EIPAttachedConfigRule:
+    Type: "AWS::Config::ConfigRule"
+    DependsOn: ConfigRecorder
+    Condition: CreateConfig
+    Properties:
+      ConfigRuleName: eip-attached
+      Description: Checks whether all EIP addresses allocated to a VPC are attached to EC2 instances or in-use ENIs.
+      Source:  # required
+        Owner: AWS
+        SourceIdentifier: EIP_ATTACHED
+
+  EC2VolumeInuseCheckConfigRule:
+    Type: "AWS::Config::ConfigRule"
+    DependsOn: ConfigRecorder
+    Condition: CreateConfig
+    Properties:
+      ConfigRuleName: ec2-volume-inuse-check
+      Description: Checks whether EBS volumes are attached to EC2 instances. Optionally checks if EBS volumes are marked for deletion when an instance is terminated.
+      InputParameters:
+        deleteOnTermination: true
+      Source:  # required
+        Owner: AWS
+        SourceIdentifier: EC2_VOLUME_INUSE_CHECK
+  

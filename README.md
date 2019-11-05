@@ -6,8 +6,14 @@
 * CloudTrail
 * IAM Role for administrator 
     * Role-Administrator (AdministratorAccess)
-* AWS Config
 * AWS Health Event notify owner (slack)
+* AWS Config
+* AWS Config Rule
+    * For Security
+        * AWS CLOUD_TRAIL_ENABLED
+    * For Cost
+        * AWS EIP_ATTACHED
+        * AWS EC2_VOLUME_INUSE_CHECK
 
 
 ## Install
@@ -108,6 +114,10 @@ Type: AWS::Config::DeliveryChannel
 ### ConfigDeliveryChannelWithS3 
 Type: AWS::Config::DeliveryChannel  
 ### CloudTrailEnabledConfigRule 
+Type: AWS::Config::ConfigRule  
+### EIPAttachedConfigRule 
+Type: AWS::Config::ConfigRule  
+### EC2VolumeInuseCheckConfigRule 
 Type: AWS::Config::ConfigRule  
 
 ## Outputs
