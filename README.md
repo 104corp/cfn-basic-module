@@ -31,13 +31,14 @@ npm i @104corp/cfn-basic-module
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'cfn-basic-module example'
 Resources:
-  Bucket:
+  Basic:
     Type: 'AWS::CloudFormation::Stack'
     Properties:
       Parameters:
         SlackWebhookURL: '' # optional
         CloudTrailS3BucketName: '' # optional
-        ConfigS3BucketName: '' # optional
+        EnableConfigService: '' # optional
+        ConfigS3BucketName: '' # optional  
         AdminAccountId: '' # optional
       TemplateURL: './node_modules/@104corp/cfn-basic-module/module.yml'
 ```
