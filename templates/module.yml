@@ -47,6 +47,9 @@ Conditions:
   HasConfigS3Bucket: !And
     - !Condition CreateConfig
     - !Not [!Equals [!Ref ConfigS3BucketName, ""]]
+  CreateCloudTrailEnabledConfigRule: !And 
+    - !Condition CreateConfig
+    - !Condition CreateCloudTrail
 Resources:
 
   ## Health Event Notify ##
@@ -282,7 +285,7 @@ Resources:
   CloudTrailEnabledConfigRule:
     Type: "AWS::Config::ConfigRule"
     DependsOn: ConfigRecorder
-    Condition: CreateConfig
+    Condition: CreateCloudTrailEnabledConfigRule
     Properties:
       ConfigRuleName: cloudtrail-enabled
       Description: Checks whether AWS CloudTrail is enabled in your AWS account.
