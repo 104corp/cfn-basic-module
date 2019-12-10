@@ -4,6 +4,10 @@
       "ParameterValue": "None"
     },
     {
+      "ParameterKey": "EnableCloudTrail",
+      "ParameterValue": "true"
+    },
+    {
       "ParameterKey": "CloudTrailS3BucketName",
       "ParameterValue": ""
     },
