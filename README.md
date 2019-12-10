@@ -68,6 +68,9 @@ The list of parameters for this template:
 Type: String 
 Default: None 
 Description: (Optional) send notify to slack webhook url 
+### EnableCloudTrail 
+Type: String  
+Description: (Optional) enable CloudTrail or not 
 ### CloudTrailS3BucketName 
 Type: String  
 Description: (Optional) If you already have a cloudtrail s3 bucket 
@@ -77,9 +80,9 @@ Description: (Optional) enable config service or not
 ### ConfigS3BucketName 
 Type: String  
 Description: (Optional) If you already have a aws config s3 bucket 
-### AdminAccountId 
+### AdminPrincipal 
 Type: String  
-Description: (Optional) AWS Account Id of the administrator account for assume role 
+Description: (Optional) AWS Account Principal of the administrator account for assume role 
 
 ## Resources
 The list of resources this template creates:
