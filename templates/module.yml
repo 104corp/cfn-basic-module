@@ -287,10 +287,12 @@ Resources:
     DependsOn: ConfigRecorder
     Condition: CreateCloudTrailEnabledConfigRule
     Properties:
-      ConfigRuleName: cloudtrail-enabled
       Description: Checks whether AWS CloudTrail is enabled in your AWS account.
       InputParameters:
         s3BucketName: !If [HasCloudTrailS3Bucket, !Ref CloudTrailS3BucketName, !Ref CloudTrailS3Bucket]
+      Scope:
+        ComplianceResourceTypes: 
+          - AWS::CloudTrail::Trail
       Source:  # required
         Owner: AWS
         SourceIdentifier: CLOUD_TRAIL_ENABLED
@@ -300,8 +302,10 @@ Resources:
     DependsOn: ConfigRecorder
     Condition: CreateConfig
     Properties:
-      ConfigRuleName: eip-attached
       Description: Checks whether all EIP addresses allocated to a VPC are attached to EC2 instances or in-use ENIs.
+      Scope:
+        ComplianceResourceTypes: 
+          - AWS::EC2::EIP
       Source:  # required
         Owner: AWS
         SourceIdentifier: EIP_ATTACHED
@@ -311,11 +315,45 @@ Resources:
     DependsOn: ConfigRecorder
     Condition: CreateConfig
     Properties:
-      ConfigRuleName: ec2-volume-inuse-check
       Description: Checks whether EBS volumes are attached to EC2 instances. Optionally checks if EBS volumes are marked for deletion when an instance is terminated.
       InputParameters:
         deleteOnTermination: true
+      Scope:
+        ComplianceResourceTypes: 
+          - AWS::EC2::Volume
       Source:  # required
         Owner: AWS
         SourceIdentifier: EC2_VOLUME_INUSE_CHECK
+
+  ACMExpirationCheckConfigRule:
+    Type: "AWS::Config::ConfigRule"
+    DependsOn: ConfigRecorder
+    Condition: CreateConfig
+    Properties:
+      Description: Checks whether ACM Certificates in your account are marked for expiration within the specified number of days. Certificates provided by ACM are automatically renewed. ACM does not automatically renew certificates that you import.
+      Scope:
+        ComplianceResourceTypes: 
+          - AWS::ACM::Certificate
+      Source:  # required
+        Owner: AWS
+        SourceIdentifier: ACM_CERTIFICATE_EXPIRATION_CHECK
   
+  IAMRootKeyCheckConfigRule:
+    Type: "AWS::Config::ConfigRule"
+    DependsOn: ConfigRecorder
+    Condition: CreateConfig
+    Properties:
+      Description: Checks whether the root user access key is available. The rule is compliant if the user access key does not exist.
+      Source:  # required
+        Owner: AWS
+        SourceIdentifier: IAM_ROOT_ACCESS_KEY_CHECK
+
+  RootMFAEnabledConfigRule:
+    Type: "AWS::Config::ConfigRule"
+    DependsOn: ConfigRecorder
+    Condition: CreateConfig
+    Properties:
+      Description: Checks whether the root user of your AWS account requires multi-factor authentication for console sign-in.
+      Source:  # required
+        Owner: AWS
+        SourceIdentifier: ROOT_ACCOUNT_MFA_ENABLED
