@@ -22,5 +22,25 @@
     {
       "ParameterKey": "AdminPrincipal",
       "ParameterValue": "477545366571"
+    },
+    {
+      "ParameterKey": "ACMCertificatesDaysToExpiration",
+      "ParameterValue": 30
+    },
+    {
+      "ParameterKey": "EnableEIPAttachedConfigRule",
+      "ParameterValue": "true"
+    },
+    {
+      "ParameterKey": "EnableEC2VolumeInuseCheckConfigRule",
+      "ParameterValue": "true"
+    },
+    {
+      "ParameterKey": "EnableIAMRootKeyCheckConfigRule",
+      "ParameterValue": "true"
+    },
+    {
+      "ParameterKey": "EnableRootMFAEnabledConfigRule",
+      "ParameterValue": "true"
     }
   ]

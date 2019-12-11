@@ -30,6 +30,38 @@ Parameters:
     Type: String
     Description:
       (Optional) AWS Account Principal of the administrator account for assume role
+  ACMCertificatesDaysToExpiration:
+    Description: (Optional) Checks whether ACM Certificates in your account are marked for expiration within the specified number of days.
+    Type: Number
+    Default: 0
+  EnableEIPAttachedConfigRule:
+    Description: (Optional) enable Checks whether all EIP addresses allocated to a VPC are attached to EC2 instances or in-use ENIs.
+    Type: String
+    Default: false
+    AllowedValues: 
+      - true
+      - false
+  EnableEC2VolumeInuseCheckConfigRule:
+    Description: (Optional) enable Checks whether EBS volumes are attached to EC2 instances.
+    Type: String
+    Default: false
+    AllowedValues: 
+      - true
+      - false
+  EnableIAMRootKeyCheckConfigRule:
+    Description: (Optional) enable Checks whether the root user access key is available.
+    Type: String
+    Default: false
+    AllowedValues: 
+      - true
+      - false
+  EnableRootMFAEnabledConfigRule:
+    Description: (Optional) enable Checks whether the root user of your AWS account requires multi-factor authentication for console sign-in.
+    Type: String
+    Default: false
+    AllowedValues: 
+      - true
+      - false
 Conditions: 
   CreateHealthEventNotify: !Not [!Equals [!Ref SlackWebhookURL, "None"]]
   CreateAssumeRole: !Not [!Equals [!Ref AdminPrincipal, ""]]
@@ -50,6 +82,21 @@ Conditions:
   CreateCloudTrailEnabledConfigRule: !And 
     - !Condition CreateConfig
     - !Condition CreateCloudTrail
+  CreateACMExpirationCheckConfigRule: !And 
+    - !Condition CreateConfig
+    - !Not [!Equals [!Ref ACMCertificatesDaysToExpiration, 0]]
+  CreateEIPAttachedConfigRule: !And 
+    - !Condition CreateConfig
+    - !Equals [!Ref EnableEIPAttachedConfigRule, true]
+  CreateEC2VolumeInuseCheckConfigRule: !And 
+    - !Condition CreateConfig
+    - !Equals [!Ref EnableEC2VolumeInuseCheckConfigRule, true]
+  CreateIAMRootKeyCheckConfigRule: !And 
+    - !Condition CreateConfig
+    - !Equals [!Ref EnableIAMRootKeyCheckConfigRule, true]
+  CreateRootMFAEnabledConfigRule: !And 
+    - !Condition CreateConfig
+    - !Equals [!Ref EnableRootMFAEnabledConfigRule, true]
 Resources:
 
   ## Health Event Notify ##
@@ -300,7 +347,7 @@ Resources:
   EIPAttachedConfigRule:
     Type: "AWS::Config::ConfigRule"
     DependsOn: ConfigRecorder
-    Condition: CreateConfig
+    Condition: CreateEIPAttachedConfigRule
     Properties:
       Description: Checks whether all EIP addresses allocated to a VPC are attached to EC2 instances or in-use ENIs.
       Scope:
@@ -313,7 +360,7 @@ Resources:
   EC2VolumeInuseCheckConfigRule:
     Type: "AWS::Config::ConfigRule"
     DependsOn: ConfigRecorder
-    Condition: CreateConfig
+    Condition: CreateEC2VolumeInuseCheckConfigRule
     Properties:
       Description: Checks whether EBS volumes are attached to EC2 instances. Optionally checks if EBS volumes are marked for deletion when an instance is terminated.
       InputParameters:
@@ -328,9 +375,11 @@ Resources:
   ACMExpirationCheckConfigRule:
     Type: "AWS::Config::ConfigRule"
     DependsOn: ConfigRecorder
-    Condition: CreateConfig
+    Condition: CreateACMExpirationCheckConfigRule
     Properties:
       Description: Checks whether ACM Certificates in your account are marked for expiration within the specified number of days. Certificates provided by ACM are automatically renewed. ACM does not automatically renew certificates that you import.
+      InputParameters:
+        daysToExpiration: !Ref ACMCertificatesDaysToExpiration
       Scope:
         ComplianceResourceTypes: 
           - AWS::ACM::Certificate
@@ -341,7 +390,7 @@ Resources:
   IAMRootKeyCheckConfigRule:
     Type: "AWS::Config::ConfigRule"
     DependsOn: ConfigRecorder
-    Condition: CreateConfig
+    Condition: CreateIAMRootKeyCheckConfigRule
     Properties:
       Description: Checks whether the root user access key is available. The rule is compliant if the user access key does not exist.
       Source:  # required
@@ -351,7 +400,7 @@ Resources:
   RootMFAEnabledConfigRule:
     Type: "AWS::Config::ConfigRule"
     DependsOn: ConfigRecorder
-    Condition: CreateConfig
+    Condition: CreateRootMFAEnabledConfigRule
     Properties:
       Description: Checks whether the root user of your AWS account requires multi-factor authentication for console sign-in.
       Source:  # required

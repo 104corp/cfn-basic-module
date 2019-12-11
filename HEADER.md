@@ -9,8 +9,12 @@
 * AWS Health Event notify owner (slack)
 * AWS Config
 * AWS Config Rule
+    * For Monitor
+        * AWS ACM_CERTIFICATE_EXPIRATION_CHECK
     * For Security
         * AWS CLOUD_TRAIL_ENABLED
+        * IAM_ROOT_ACCESS_KEY_CHECK
+        * ROOT_ACCOUNT_MFA_ENABLED
     * For Cost
         * AWS EIP_ATTACHED
         * AWS EC2_VOLUME_INUSE_CHECK

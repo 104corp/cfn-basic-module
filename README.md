@@ -9,8 +9,12 @@
 * AWS Health Event notify owner (slack)
 * AWS Config
 * AWS Config Rule
+    * For Monitor
+        * AWS ACM_CERTIFICATE_EXPIRATION_CHECK
     * For Security
         * AWS CLOUD_TRAIL_ENABLED
+        * IAM_ROOT_ACCESS_KEY_CHECK
+        * ROOT_ACCOUNT_MFA_ENABLED
     * For Cost
         * AWS EIP_ATTACHED
         * AWS EC2_VOLUME_INUSE_CHECK
@@ -83,6 +87,21 @@ Description: (Optional) If you already have a aws config s3 bucket
 ### AdminPrincipal 
 Type: String  
 Description: (Optional) AWS Account Principal of the administrator account for assume role 
+### ACMCertificatesDaysToExpiration 
+Type: Number  
+Description: (Optional) Checks whether ACM Certificates in your account are marked for expiration within the specified number of days. 
+### EnableEIPAttachedConfigRule 
+Type: String  
+Description: (Optional) enable Checks whether all EIP addresses allocated to a VPC are attached to EC2 instances or in-use ENIs. 
+### EnableEC2VolumeInuseCheckConfigRule 
+Type: String  
+Description: (Optional) enable Checks whether EBS volumes are attached to EC2 instances. 
+### EnableIAMRootKeyCheckConfigRule 
+Type: String  
+Description: (Optional) enable Checks whether the root user access key is available. 
+### EnableRootMFAEnabledConfigRule 
+Type: String  
+Description: (Optional) enable Checks whether the root user of your AWS account requires multi-factor authentication for console sign-in. 
 
 ## Resources
 The list of resources this template creates:
@@ -122,6 +141,12 @@ Type: AWS::Config::ConfigRule
 ### EIPAttachedConfigRule 
 Type: AWS::Config::ConfigRule  
 ### EC2VolumeInuseCheckConfigRule 
+Type: AWS::Config::ConfigRule  
+### ACMExpirationCheckConfigRule 
+Type: AWS::Config::ConfigRule  
+### IAMRootKeyCheckConfigRule 
+Type: AWS::Config::ConfigRule  
+### RootMFAEnabledConfigRule 
 Type: AWS::Config::ConfigRule  
 
 ## Outputs
