@@ -302,19 +302,26 @@ Resources:
               StringEquals:
                 "s3:x-amz-acl": bucket-owner-full-control
 
-  AWSServiceRoleForConfig:
-    Type: AWS::IAM::ServiceLinkedRole
+  RoleForConfig:
+    Type: "AWS::IAM::Role"
     Condition: CreateConfig
-    Properties: 
-      AWSServiceName: config.amazonaws.com
+    Properties:
       Description: Allows Config to call AWS services and collect resource configurations on your behalf.
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: config.amazonaws.com
+            Action:
+              - sts:AssumeRole  # required
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/aws-service-role/AWSConfigServiceRolePolicy
 
   ConfigRecorder:
     Type: "AWS::Config::ConfigurationRecorder"
-    DependsOn: AWSServiceRoleForConfig
     Condition: CreateConfig
     Properties:
-      RoleARN: !Sub arn:aws:iam::${AWS::AccountId}:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig
+      RoleARN: !GetAtt RoleForConfig.Arn
   
   ConfigDeliveryChannel:
     Type: "AWS::Config::DeliveryChannel"
