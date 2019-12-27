@@ -2,6 +2,10 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: A basic template
 Parameters:
+  MainRegion:
+    Description: (Optional) create in main region
+    Type: String
+    Default: "None"
   SlackWebhookURL:
     Description: (Optional) send notify to slack webhook url
     Type: String
@@ -63,16 +67,27 @@ Parameters:
       - true
       - false
 Conditions: 
-  CreateHealthEventNotify: !Not [!Equals [!Ref SlackWebhookURL, "None"]]
-  CreateAssumeRole: !Not [!Equals [!Ref AdminPrincipal, ""]]
-  CreateCloudTrail: !Equals [!Ref EnableCloudTrail, true]
+  CreateInMainRegion: !Or
+    - !Equals [!Ref MainRegion, "None"]
+    - !Equals [!Ref MainRegion, !Ref AWS::Region]
+  CreateHealthEventNotify: !And
+    - !Condition CreateInMainRegion
+    - !Not [!Equals [!Ref SlackWebhookURL, "None"]]
+  CreateAssumeRole: !And
+    - !Condition CreateInMainRegion
+    - !Not [!Equals [!Ref AdminPrincipal, ""]]
+  CreateCloudTrail: !And
+    - !Condition CreateInMainRegion
+    - !Equals [!Ref EnableCloudTrail, true]
   CreateCloudTrailS3Bucket: !And
     - !Condition CreateCloudTrail
     - !Equals [!Ref CloudTrailS3BucketName, ""]
   HasCloudTrailS3Bucket: !And
     - !Condition CreateCloudTrail
     - !Not [!Equals [!Ref CloudTrailS3BucketName, ""]]
-  CreateConfig: !Equals [!Ref EnableConfigService, true]
+  CreateConfig: !And
+    - !Condition CreateInMainRegion
+    - !Equals [!Ref EnableConfigService, true]
   CreateConfigS3Bucket: !And
     - !Condition CreateConfig
     - !Equals [!Ref ConfigS3BucketName, ""]
@@ -97,6 +112,7 @@ Conditions:
   CreateRootMFAEnabledConfigRule: !And 
     - !Condition CreateConfig
     - !Equals [!Ref EnableRootMFAEnabledConfigRule, true]
+
 Resources:
 
   ## Health Event Notify ##
@@ -321,6 +337,9 @@ Resources:
     Type: "AWS::Config::ConfigurationRecorder"
     Condition: CreateConfig
     Properties:
+      RecordingGroup: 
+        AllSupported: true
+        IncludeGlobalResourceTypes: true
       RoleARN: !GetAtt RoleForConfig.Arn
   
   ConfigDeliveryChannel:

@@ -10,3 +10,6 @@ tests:
   basic-scenario-create-role-config:
     parameter_input: create-role-config.json
     template_file: module.yml
+  basic-scenario-not-in-main-region:
+    parameter_input: not-in-main-region.json
+    template_file: module.yml

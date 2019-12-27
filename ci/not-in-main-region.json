@@ -1,7 +1,7 @@
 [
     {
       "ParameterKey": "MainRegion",
-      "ParameterValue": "None"
+      "ParameterValue": "us-east-1"
     },
     {
       "ParameterKey": "SlackWebhookURL",
@@ -9,7 +9,7 @@
     },
     {
       "ParameterKey": "EnableCloudTrail",
-      "ParameterValue": "false"
+      "ParameterValue": "true"
     },
     {
       "ParameterKey": "CloudTrailS3BucketName",
@@ -17,7 +17,7 @@
     },
     {
       "ParameterKey": "EnableConfigService",
-      "ParameterValue": "false"
+      "ParameterValue": "true"
     },
     {
       "ParameterKey": "ConfigS3BucketName",
@@ -25,26 +25,26 @@
     },
     {
       "ParameterKey": "AdminPrincipal",
-      "ParameterValue": ""
+      "ParameterValue": "477545366571"
     },
     {
       "ParameterKey": "ACMCertificatesDaysToExpiration",
-      "ParameterValue": 0
+      "ParameterValue": 30
     },
     {
       "ParameterKey": "EnableEIPAttachedConfigRule",
-      "ParameterValue": "false"
+      "ParameterValue": "true"
     },
     {
       "ParameterKey": "EnableEC2VolumeInuseCheckConfigRule",
-      "ParameterValue": "false"
+      "ParameterValue": "true"
     },
     {
       "ParameterKey": "EnableIAMRootKeyCheckConfigRule",
-      "ParameterValue": "false"
+      "ParameterValue": "true"
     },
     {
       "ParameterKey": "EnableRootMFAEnabledConfigRule",
-      "ParameterValue": "false"
+      "ParameterValue": "true"
     }
   ]

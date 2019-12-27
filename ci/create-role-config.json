@@ -1,5 +1,9 @@
 [
     {
+      "ParameterKey": "MainRegion",
+      "ParameterValue": "ap-northeast-1"
+    },
+    {
       "ParameterKey": "SlackWebhookURL",
       "ParameterValue": "None"
     },
