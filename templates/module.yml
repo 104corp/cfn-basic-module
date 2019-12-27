@@ -69,7 +69,7 @@ Parameters:
 Conditions: 
   CreateInMainRegion: !Or
     - !Equals [!Ref MainRegion, "None"]
-    - !Equals [!Ref MainRegion, !Ref AWS::Region]
+    - !Equals [!Ref MainRegion, !Ref "AWS::Region"]
   CreateHealthEventNotify: !And
     - !Condition CreateInMainRegion
     - !Not [!Equals [!Ref SlackWebhookURL, "None"]]
