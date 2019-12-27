@@ -34,6 +34,7 @@ Parameters:
     Type: String
     Description:
       (Optional) AWS Account Principal of the administrator account for assume role
+    Default: "None"
   ACMCertificatesDaysToExpiration:
     Description: (Optional) Checks whether ACM Certificates in your account are marked for expiration within the specified number of days.
     Type: Number
@@ -75,7 +76,7 @@ Conditions:
     - !Not [!Equals [!Ref SlackWebhookURL, "None"]]
   CreateAssumeRole: !And
     - !Condition CreateInMainRegion
-    - !Not [!Equals [!Ref AdminPrincipal, ""]]
+    - !Not [!Equals [!Ref AdminPrincipal, "None"]]
   CreateCloudTrail: !And
     - !Condition CreateInMainRegion
     - !Equals [!Ref EnableCloudTrail, true]
