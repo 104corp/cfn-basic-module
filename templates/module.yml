@@ -86,9 +86,7 @@ Conditions:
   HasCloudTrailS3Bucket: !And
     - !Condition CreateCloudTrail
     - !Not [!Equals [!Ref CloudTrailS3BucketName, ""]]
-  CreateConfig: !And
-    - !Condition CreateInMainRegion
-    - !Equals [!Ref EnableConfigService, true]
+  CreateConfig: !Equals [!Ref EnableConfigService, true]
   CreateConfigS3Bucket: !And
     - !Condition CreateConfig
     - !Equals [!Ref ConfigS3BucketName, ""]
