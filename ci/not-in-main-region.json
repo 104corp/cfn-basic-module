@@ -24,6 +24,10 @@
       "ParameterValue": ""
     },
     {
+      "ParameterKey": "ConfigSNSTopicArn",
+      "ParameterValue": "None"
+    },
+    {
       "ParameterKey": "AdminPrincipal",
       "ParameterValue": "477545366571"
     },

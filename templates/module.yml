@@ -30,6 +30,10 @@ Parameters:
   ConfigS3BucketName:
     Description: (Optional) If you already have a aws config s3 bucket
     Type: String
+  ConfigSNSTopicArn:
+    Description: (Optional) config sns topic arn.
+    Type: String
+    Default: "None"
   AdminPrincipal:
     Type: String
     Description:
@@ -90,6 +94,9 @@ Conditions:
   CreateConfigS3Bucket: !And
     - !Condition CreateConfig
     - !Equals [!Ref ConfigS3BucketName, ""]
+  HasConfigSNSTopicArn: !And
+    - !Condition CreateConfig
+    - !Not [!Equals [!Ref ConfigSNSTopicArn, "None"]]
   HasConfigS3Bucket: !And
     - !Condition CreateConfig
     - !Not [!Equals [!Ref ConfigS3BucketName, ""]]
@@ -113,7 +120,6 @@ Conditions:
     - !Equals [!Ref EnableRootMFAEnabledConfigRule, true]
 
 Resources:
-
   ## Health Event Notify ##
   EventRule:
     Type: AWS::Events::Rule
@@ -346,6 +352,8 @@ Resources:
     Condition: HasConfigS3Bucket
     Properties:
       S3BucketName: !Ref ConfigS3BucketName  # required
+      SnsTopicARN: !If [ HasConfigSNSTopicArn, !Ref ConfigSNSTopicArn , !Ref AWS::NoValue]
+
   
   ConfigDeliveryChannelWithS3:
     Type: "AWS::Config::DeliveryChannel"
@@ -353,7 +361,8 @@ Resources:
     Condition: CreateConfigS3Bucket
     Properties:
       S3BucketName: !Ref ConfigS3Bucket  # required
-  
+      SnsTopicARN: !If [ HasConfigSNSTopicArn, !Ref ConfigSNSTopicArn , !Ref AWS::NoValue]
+
   CloudTrailEnabledConfigRule:
     Type: "AWS::Config::ConfigRule"
     DependsOn: ConfigRecorder
