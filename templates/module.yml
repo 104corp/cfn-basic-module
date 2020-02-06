@@ -352,7 +352,7 @@ Resources:
     Condition: HasConfigS3Bucket
     Properties:
       S3BucketName: !Ref ConfigS3BucketName  # required
-      SnsTopicARN: !If [ HasConfigSNSTopicArn, !Ref ConfigSNSTopicArn , !Ref AWS::NoValue]
+      SnsTopicARN: !If [ HasConfigSNSTopicArn, !Ref ConfigSNSTopicArn , !Ref "AWS::NoValue"]
 
   
   ConfigDeliveryChannelWithS3:
@@ -361,7 +361,7 @@ Resources:
     Condition: CreateConfigS3Bucket
     Properties:
       S3BucketName: !Ref ConfigS3Bucket  # required
-      SnsTopicARN: !If [ HasConfigSNSTopicArn, !Ref ConfigSNSTopicArn , !Ref AWS::NoValue]
+      SnsTopicARN: !If [ HasConfigSNSTopicArn, !Ref ConfigSNSTopicArn , !Ref "AWS::NoValue"]
 
   CloudTrailEnabledConfigRule:
     Type: "AWS::Config::ConfigRule"
