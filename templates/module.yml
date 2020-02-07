@@ -337,6 +337,19 @@ Resources:
               - sts:AssumeRole  # required
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSConfigRole
+      Policies:
+        - !If 
+          - HasConfigSNSTopicArn
+          - PolicyName: config-role-policy
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - sns:Publish
+                  Resource:
+                    !Ref ConfigSNSTopicArn
+          - !Ref "AWS::NoValue"
 
   ConfigRecorder:
     Type: "AWS::Config::ConfigurationRecorder"
