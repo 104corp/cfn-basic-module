@@ -16,6 +16,7 @@ after_script:
 - python clear_up_fail_stacks.py
 
 deploy:
+  edge: true
   provider: npm
   email: $NPM_EMAIL
   api_key: $NPM_TOKEN
