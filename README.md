@@ -15,6 +15,7 @@
         * AWS CLOUD_TRAIL_ENABLED
         * IAM_ROOT_ACCESS_KEY_CHECK
         * ROOT_ACCOUNT_MFA_ENABLED
+        * RDS_INSTANCE_PUBLIC_ACCESS_CHECK
     * For Cost
         * AWS EIP_ATTACHED
         * AWS EC2_VOLUME_INUSE_CHECK
@@ -68,6 +69,10 @@ A basic template
 ## Parameters
 The list of parameters for this template:
 
+### MainRegion 
+Type: String 
+Default: None 
+Description: (Optional) create in main region 
 ### SlackWebhookURL 
 Type: String 
 Default: None 
@@ -84,8 +89,13 @@ Description: (Optional) enable config service or not
 ### ConfigS3BucketName 
 Type: String  
 Description: (Optional) If you already have a aws config s3 bucket 
+### ConfigSNSTopicArn 
+Type: String 
+Default: None 
+Description: (Optional) config sns topic arn. 
 ### AdminPrincipal 
-Type: String  
+Type: String 
+Default: None 
 Description: (Optional) AWS Account Principal of the administrator account for assume role 
 ### ACMCertificatesDaysToExpiration 
 Type: Number  
@@ -102,6 +112,9 @@ Description: (Optional) enable Checks whether the root user access key is availa
 ### EnableRootMFAEnabledConfigRule 
 Type: String  
 Description: (Optional) enable Checks whether the root user of your AWS account requires multi-factor authentication for console sign-in. 
+### EnableRDSPublicAccessCheckConfigRule 
+Type: String  
+Description: (Optional) enable Checks whether the Amazon Relational Database Service (RDS) instances are not publicly accessible. The rule is non-compliant if the publiclyAccessible field is true in the instance configuration item. 
 
 ## Resources
 The list of resources this template creates:
@@ -128,8 +141,8 @@ Type: AWS::IAM::Role
 Type: AWS::S3::Bucket  
 ### ConfigS3BucketPolicy 
 Type: AWS::S3::BucketPolicy  
-### AWSServiceRoleForConfig 
-Type: AWS::IAM::ServiceLinkedRole  
+### RoleForConfig 
+Type: AWS::IAM::Role  
 ### ConfigRecorder 
 Type: AWS::Config::ConfigurationRecorder  
 ### ConfigDeliveryChannel 
@@ -147,6 +160,8 @@ Type: AWS::Config::ConfigRule
 ### IAMRootKeyCheckConfigRule 
 Type: AWS::Config::ConfigRule  
 ### RootMFAEnabledConfigRule 
+Type: AWS::Config::ConfigRule  
+### RDSPublicAccessCheckConfigRule 
 Type: AWS::Config::ConfigRule  
 
 ## Outputs

@@ -71,6 +71,13 @@ Parameters:
     AllowedValues: 
       - true
       - false
+  EnableRDSPublicAccessCheckConfigRule:
+    Description: (Optional) enable Checks whether the Amazon Relational Database Service (RDS) instances are not publicly accessible. The rule is non-compliant if the publiclyAccessible field is true in the instance configuration item.
+    Type: String
+    Default: false
+    AllowedValues: 
+      - true
+      - false
 Conditions: 
   CreateInMainRegion: !Or
     - !Equals [!Ref MainRegion, "None"]
@@ -118,6 +125,9 @@ Conditions:
   CreateRootMFAEnabledConfigRule: !And 
     - !Condition CreateConfig
     - !Equals [!Ref EnableRootMFAEnabledConfigRule, true]
+  CreateRDSPublicAccessCheckConfigRule: !And 
+    - !Condition CreateConfig
+    - !Equals [!Ref EnableRDSPublicAccessCheckConfigRule, true]
 
 Resources:
   ## Health Event Notify ##
@@ -381,6 +391,7 @@ Resources:
     DependsOn: ConfigRecorder
     Condition: CreateCloudTrailEnabledConfigRule
     Properties:
+      ConfigRuleName: CloudTrailEnabled
       Description: Checks whether AWS CloudTrail is enabled in your AWS account.
       InputParameters:
         s3BucketName: !If [HasCloudTrailS3Bucket, !Ref CloudTrailS3BucketName, !Ref CloudTrailS3Bucket]
@@ -396,6 +407,7 @@ Resources:
     DependsOn: ConfigRecorder
     Condition: CreateEIPAttachedConfigRule
     Properties:
+      ConfigRuleName: EIPAttached
       Description: Checks whether all EIP addresses allocated to a VPC are attached to EC2 instances or in-use ENIs.
       Scope:
         ComplianceResourceTypes: 
@@ -409,6 +421,7 @@ Resources:
     DependsOn: ConfigRecorder
     Condition: CreateEC2VolumeInuseCheckConfigRule
     Properties:
+      ConfigRuleName: EC2VolumeInuse
       Description: Checks whether EBS volumes are attached to EC2 instances. Optionally checks if EBS volumes are marked for deletion when an instance is terminated.
       InputParameters:
         deleteOnTermination: true
@@ -424,6 +437,7 @@ Resources:
     DependsOn: ConfigRecorder
     Condition: CreateACMExpirationCheckConfigRule
     Properties:
+      ConfigRuleName: ACMExpiration
       Description: Checks whether ACM Certificates in your account are marked for expiration within the specified number of days. Certificates provided by ACM are automatically renewed. ACM does not automatically renew certificates that you import.
       InputParameters:
         daysToExpiration: !Ref ACMCertificatesDaysToExpiration
@@ -439,6 +453,7 @@ Resources:
     DependsOn: ConfigRecorder
     Condition: CreateIAMRootKeyCheckConfigRule
     Properties:
+      ConfigRuleName: IAMRootKey
       Description: Checks whether the root user access key is available. The rule is compliant if the user access key does not exist.
       Source:  # required
         Owner: AWS
@@ -449,7 +464,22 @@ Resources:
     DependsOn: ConfigRecorder
     Condition: CreateRootMFAEnabledConfigRule
     Properties:
+      ConfigRuleName: RootMFAEnabled
       Description: Checks whether the root user of your AWS account requires multi-factor authentication for console sign-in.
       Source:  # required
         Owner: AWS
         SourceIdentifier: ROOT_ACCOUNT_MFA_ENABLED
+
+  RDSPublicAccessCheckConfigRule:
+    Type: "AWS::Config::ConfigRule"
+    DependsOn: ConfigRecorder
+    Condition: CreateRDSPublicAccessCheckConfigRule
+    Properties:
+      ConfigRuleName: RDSPublicAccess
+      Description: Checks whether the Amazon Relational Database Service (RDS) instances are not publicly accessible. The rule is non-compliant if the publiclyAccessible field is true in the instance configuration item.
+      Scope:
+        ComplianceResourceTypes: 
+          - AWS::RDS::DBInstance
+      Source:  # required
+        Owner: AWS
+        SourceIdentifier: RDS_INSTANCE_PUBLIC_ACCESS_CHECK
