@@ -50,5 +50,9 @@
     {
       "ParameterKey": "EnableRootMFAEnabledConfigRule",
       "ParameterValue": "true"
+    },
+    {
+      "ParameterKey": "EnableRDSPublicAccessCheckConfigRule",
+      "ParameterValue": "true"
     }
   ]
