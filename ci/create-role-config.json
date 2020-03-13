@@ -28,6 +28,10 @@
       "ParameterValue": "None"
     },
     {
+      "ParameterKey": "CofingRulePrefix",
+      "ParameterValue": "Test-Prefix"
+    },
+    {
       "ParameterKey": "AdminPrincipal",
       "ParameterValue": "477545366571"
     },

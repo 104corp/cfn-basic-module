@@ -10,6 +10,11 @@ Parameters:
     Description: (Optional) send notify to slack webhook url
     Type: String
     Default: "None"
+  AdminPrincipal:
+    Type: String
+    Description:
+      (Optional) AWS Account Principal of the administrator account for assume role
+    Default: "None"
   EnableCloudTrail:
     Description: (Optional) enable CloudTrail or not
     Type: String
@@ -34,10 +39,9 @@ Parameters:
     Description: (Optional) config sns topic arn.
     Type: String
     Default: "None"
-  AdminPrincipal:
+  CofingRulePrefix:
     Type: String
-    Description:
-      (Optional) AWS Account Principal of the administrator account for assume role
+    Description: (Optional) config rule name prefix
     Default: "None"
   ACMCertificatesDaysToExpiration:
     Description: (Optional) Checks whether ACM Certificates in your account are marked for expiration within the specified number of days.
@@ -101,12 +105,15 @@ Conditions:
   CreateConfigS3Bucket: !And
     - !Condition CreateConfig
     - !Equals [!Ref ConfigS3BucketName, ""]
-  HasConfigSNSTopicArn: !And
-    - !Condition CreateConfig
-    - !Not [!Equals [!Ref ConfigSNSTopicArn, "None"]]
   HasConfigS3Bucket: !And
     - !Condition CreateConfig
     - !Not [!Equals [!Ref ConfigS3BucketName, ""]]
+  HasConfigSNSTopicArn: !And
+    - !Condition CreateConfig
+    - !Not [!Equals [!Ref ConfigSNSTopicArn, "None"]]
+  HasCofingRulePrefix: !And
+    - !Condition CreateConfig
+    - !Not [!Equals [!Ref CofingRulePrefix, "None"]]
   CreateCloudTrailEnabledConfigRule: !And 
     - !Condition CreateConfig
     - !Condition CreateCloudTrail
@@ -391,9 +398,12 @@ Resources:
     DependsOn: ConfigRecorder
     Condition: CreateCloudTrailEnabledConfigRule
     Properties:
-      ConfigRuleName: !Sub
-                      - ${StackName}-CloudTrailEnabled
-                      - { StackName: !Ref "AWS::StackName" }
+      ConfigRuleName: !If 
+                      - HasCofingRulePrefix
+                      - !Sub
+                        - ${CofingRulePrefix}-CloudTrailEnabled
+                        - { CofingRulePrefix: !Ref CofingRulePrefix } 
+                      - !Ref "AWS::NoValue"
       Description: Checks whether AWS CloudTrail is enabled in your AWS account.
       InputParameters:
         s3BucketName: !If [HasCloudTrailS3Bucket, !Ref CloudTrailS3BucketName, !Ref CloudTrailS3Bucket]
@@ -409,9 +419,7 @@ Resources:
     DependsOn: ConfigRecorder
     Condition: CreateEIPAttachedConfigRule
     Properties:
-      ConfigRuleName: !Sub
-                      - ${StackName}-EIPAttached
-                      - { StackName: !Ref "AWS::StackName" }
+      ConfigRuleName: EIPAttached
       Description: Checks whether all EIP addresses allocated to a VPC are attached to EC2 instances or in-use ENIs.
       Scope:
         ComplianceResourceTypes: 
@@ -425,9 +433,7 @@ Resources:
     DependsOn: ConfigRecorder
     Condition: CreateEC2VolumeInuseCheckConfigRule
     Properties:
-      ConfigRuleName: !Sub
-                      - ${StackName}-EC2VolumeInuse
-                      - { StackName: !Ref "AWS::StackName" }
+      ConfigRuleName: EC2VolumeInuse
       Description: Checks whether EBS volumes are attached to EC2 instances. Optionally checks if EBS volumes are marked for deletion when an instance is terminated.
       InputParameters:
         deleteOnTermination: true
@@ -443,9 +449,7 @@ Resources:
     DependsOn: ConfigRecorder
     Condition: CreateACMExpirationCheckConfigRule
     Properties:
-      ConfigRuleName: !Sub
-                      - ${StackName}-ACMExpiration
-                      - { StackName: !Ref "AWS::StackName" }
+      ConfigRuleName: ACMExpiration
       Description: Checks whether ACM Certificates in your account are marked for expiration within the specified number of days. Certificates provided by ACM are automatically renewed. ACM does not automatically renew certificates that you import.
       InputParameters:
         daysToExpiration: !Ref ACMCertificatesDaysToExpiration
@@ -461,9 +465,7 @@ Resources:
     DependsOn: ConfigRecorder
     Condition: CreateIAMRootKeyCheckConfigRule
     Properties:
-      ConfigRuleName: !Sub
-                      - ${StackName}-IAMRootKey
-                      - { StackName: !Ref "AWS::StackName" }
+      ConfigRuleName: IAMRootKey
       Description: Checks whether the root user access key is available. The rule is compliant if the user access key does not exist.
       Source:  # required
         Owner: AWS
@@ -474,9 +476,7 @@ Resources:
     DependsOn: ConfigRecorder
     Condition: CreateRootMFAEnabledConfigRule
     Properties:
-      ConfigRuleName: !Sub
-                      - ${StackName}-RootMFAEnabled
-                      - { StackName: !Ref "AWS::StackName" }
+      ConfigRuleName: RootMFAEnabled
       Description: Checks whether the root user of your AWS account requires multi-factor authentication for console sign-in.
       Source:  # required
         Owner: AWS
@@ -487,9 +487,7 @@ Resources:
     DependsOn: ConfigRecorder
     Condition: CreateRDSPublicAccessCheckConfigRule
     Properties:
-      ConfigRuleName: !Sub
-                      - ${StackName}-RDSPublicAccess
-                      - { StackName: !Ref "AWS::StackName" }
+      ConfigRuleName: RDSPublicAccess
       Description: Checks whether the Amazon Relational Database Service (RDS) instances are not publicly accessible. The rule is non-compliant if the publiclyAccessible field is true in the instance configuration item.
       Scope:
         ComplianceResourceTypes: 

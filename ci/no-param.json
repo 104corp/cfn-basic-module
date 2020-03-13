@@ -28,6 +28,10 @@
       "ParameterValue": "None"
     },
     {
+      "ParameterKey": "CofingRulePrefix",
+      "ParameterValue": "None"
+    },
+    {
       "ParameterKey": "AdminPrincipal",
       "ParameterValue": "None"
     },
