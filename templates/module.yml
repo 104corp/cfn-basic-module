@@ -391,7 +391,9 @@ Resources:
     DependsOn: ConfigRecorder
     Condition: CreateCloudTrailEnabledConfigRule
     Properties:
-      ConfigRuleName: CloudTrailEnabled
+      ConfigRuleName: !Sub
+                      - ${StackName}-CloudTrailEnabled
+                      - { StackName: !Ref "AWS::StackName" }
       Description: Checks whether AWS CloudTrail is enabled in your AWS account.
       InputParameters:
         s3BucketName: !If [HasCloudTrailS3Bucket, !Ref CloudTrailS3BucketName, !Ref CloudTrailS3Bucket]
@@ -407,7 +409,9 @@ Resources:
     DependsOn: ConfigRecorder
     Condition: CreateEIPAttachedConfigRule
     Properties:
-      ConfigRuleName: EIPAttached
+      ConfigRuleName: !Sub
+                      - ${StackName}-EIPAttached
+                      - { StackName: !Ref "AWS::StackName" }
       Description: Checks whether all EIP addresses allocated to a VPC are attached to EC2 instances or in-use ENIs.
       Scope:
         ComplianceResourceTypes: 
@@ -421,7 +425,9 @@ Resources:
     DependsOn: ConfigRecorder
     Condition: CreateEC2VolumeInuseCheckConfigRule
     Properties:
-      ConfigRuleName: EC2VolumeInuse
+      ConfigRuleName: !Sub
+                      - ${StackName}-EC2VolumeInuse
+                      - { StackName: !Ref "AWS::StackName" }
       Description: Checks whether EBS volumes are attached to EC2 instances. Optionally checks if EBS volumes are marked for deletion when an instance is terminated.
       InputParameters:
         deleteOnTermination: true
@@ -437,7 +443,9 @@ Resources:
     DependsOn: ConfigRecorder
     Condition: CreateACMExpirationCheckConfigRule
     Properties:
-      ConfigRuleName: ACMExpiration
+      ConfigRuleName: !Sub
+                      - ${StackName}-ACMExpiration
+                      - { StackName: !Ref "AWS::StackName" }
       Description: Checks whether ACM Certificates in your account are marked for expiration within the specified number of days. Certificates provided by ACM are automatically renewed. ACM does not automatically renew certificates that you import.
       InputParameters:
         daysToExpiration: !Ref ACMCertificatesDaysToExpiration
@@ -453,7 +461,9 @@ Resources:
     DependsOn: ConfigRecorder
     Condition: CreateIAMRootKeyCheckConfigRule
     Properties:
-      ConfigRuleName: IAMRootKey
+      ConfigRuleName: !Sub
+                      - ${StackName}-IAMRootKey
+                      - { StackName: !Ref "AWS::StackName" }
       Description: Checks whether the root user access key is available. The rule is compliant if the user access key does not exist.
       Source:  # required
         Owner: AWS
@@ -464,7 +474,9 @@ Resources:
     DependsOn: ConfigRecorder
     Condition: CreateRootMFAEnabledConfigRule
     Properties:
-      ConfigRuleName: RootMFAEnabled
+      ConfigRuleName: !Sub
+                      - ${StackName}-RootMFAEnabled
+                      - { StackName: !Ref "AWS::StackName" }
       Description: Checks whether the root user of your AWS account requires multi-factor authentication for console sign-in.
       Source:  # required
         Owner: AWS
@@ -475,7 +487,9 @@ Resources:
     DependsOn: ConfigRecorder
     Condition: CreateRDSPublicAccessCheckConfigRule
     Properties:
-      ConfigRuleName: RDSPublicAccess
+      ConfigRuleName: !Sub
+                      - ${StackName}-RDSPublicAccess
+                      - { StackName: !Ref "AWS::StackName" }
       Description: Checks whether the Amazon Relational Database Service (RDS) instances are not publicly accessible. The rule is non-compliant if the publiclyAccessible field is true in the instance configuration item.
       Scope:
         ComplianceResourceTypes: 
