@@ -445,8 +445,6 @@ Resources:
                         - { CofingRulePrefix: !Ref CofingRulePrefix } 
                       - !Ref "AWS::NoValue"
       Description: Checks whether EBS volumes are attached to EC2 instances. Optionally checks if EBS volumes are marked for deletion when an instance is terminated.
-      InputParameters:
-        deleteOnTermination: true
       Scope:
         ComplianceResourceTypes: 
           - AWS::EC2::Volume
