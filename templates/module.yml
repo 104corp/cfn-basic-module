@@ -82,6 +82,22 @@ Parameters:
     AllowedValues: 
       - true
       - false
+  EnableSGOpenOnlyToAuthorizedPortsConfigRule:
+    Description: (Optional) enable Checks whether any security groups with inbound 0.0.0.0/0 have TCP or UDP ports accessible. The rule is NON_COMPLIANT when a security group with inbound 0.0.0.0/0 has a port accessible which is not specified in the rule parameters.
+    Type: String
+    Default: false
+    AllowedValues: 
+      - true
+      - false
+  SGOpenAuthorizedTcpPorts:
+    Description: Comma-separated list of TCP ports authorized to be open to 0.0.0.0/0. Ranges are defined by a dash; for example, "443,1020-1025".
+    Type: String
+    Default: '80,443'
+  SGOpenAuthorizedUdpPorts:
+    Description: Comma-separated list of UDP ports authorized to be open to 0.0.0.0/0. Ranges are defined by a dash; for example, "500,1020-1025".
+    Type: String
+    Default: '0'
+
 Conditions: 
   CreateInMainRegion: !Or
     - !Equals [!Ref MainRegion, "None"]
@@ -135,6 +151,9 @@ Conditions:
   CreateRDSPublicAccessCheckConfigRule: !And 
     - !Condition CreateConfig
     - !Equals [!Ref EnableRDSPublicAccessCheckConfigRule, true]
+  CreateSGOpenOnlyToAuthorizedPortsCheckConfigRule: !And 
+    - !Condition CreateConfig
+    - !Equals [!Ref EnableSGOpenOnlyToAuthorizedPortsConfigRule, true]
 
 Resources:
   ## Health Event Notify ##
@@ -523,3 +542,23 @@ Resources:
       Source:  # required
         Owner: AWS
         SourceIdentifier: RDS_INSTANCE_PUBLIC_ACCESS_CHECK
+
+  SGOpenOnlyToAuthorizedPortsConfigRule:
+    Type: "AWS::Config::ConfigRule"
+    DependsOn: ConfigRecorder
+    Condition: CreateSGOpenOnlyToAuthorizedPortsCheckConfigRule
+    Properties:
+      ConfigRuleName: !If 
+                      - HasCofingRulePrefix
+                      - !Sub
+                        - ${CofingRulePrefix}-SGOpenOnlyToAuthorizedPorts
+                        - { CofingRulePrefix: !Ref CofingRulePrefix } 
+                      - !Ref "AWS::NoValue"
+      Description: Checks whether any security groups with inbound 0.0.0.0/0 have TCP or UDP ports accessible. The rule is NON_COMPLIANT when a security group with inbound 0.0.0.0/0 has a port accessible which is not specified in the rule parameters.
+      InputParameters: {authorizedTcpPorts: !Ref SGOpenAuthorizedTcpPorts, authorizedUdpPorts: !Ref SGOpenAuthorizedUdpPorts}
+      Scope:
+        ComplianceResourceTypes: 
+          - AWS::EC2::SecurityGroup
+      Source:  # required
+        Owner: AWS
+        SourceIdentifier: VPC_SG_OPEN_ONLY_TO_AUTHORIZED_PORTS
