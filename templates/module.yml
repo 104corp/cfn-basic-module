@@ -25,6 +25,7 @@ Parameters:
   CloudTrailS3BucketName:
     Description: (Optional) If you already have a cloudtrail s3 bucket
     Type: String
+    Default: "None"
   EnableConfigService:
     Description: (Optional) enable config service or not
     Type: String
@@ -35,6 +36,7 @@ Parameters:
   ConfigS3BucketName:
     Description: (Optional) If you already have a aws config s3 bucket
     Type: String
+    Default: "None"
   ConfigSNSTopicArn:
     Description: (Optional) config sns topic arn.
     Type: String
@@ -113,17 +115,17 @@ Conditions:
     - !Equals [!Ref EnableCloudTrail, true]
   CreateCloudTrailS3Bucket: !And
     - !Condition CreateCloudTrail
-    - !Equals [!Ref CloudTrailS3BucketName, ""]
+    - !Equals [!Ref CloudTrailS3BucketName, "None"]
   HasCloudTrailS3Bucket: !And
     - !Condition CreateCloudTrail
-    - !Not [!Equals [!Ref CloudTrailS3BucketName, ""]]
+    - !Not [!Equals [!Ref CloudTrailS3BucketName, "None"]]
   CreateConfig: !Equals [!Ref EnableConfigService, true]
   CreateConfigS3Bucket: !And
     - !Condition CreateConfig
-    - !Equals [!Ref ConfigS3BucketName, ""]
+    - !Equals [!Ref ConfigS3BucketName, "None"]
   HasConfigS3Bucket: !And
     - !Condition CreateConfig
-    - !Not [!Equals [!Ref ConfigS3BucketName, ""]]
+    - !Not [!Equals [!Ref ConfigS3BucketName, "None"]]
   HasConfigSNSTopicArn: !And
     - !Condition CreateConfig
     - !Not [!Equals [!Ref ConfigSNSTopicArn, "None"]]
