@@ -1,66 +1,10 @@
 [
     {
-      "ParameterKey": "MainRegion",
-      "ParameterValue": "None"
-    },
-    {
-      "ParameterKey": "SlackWebhookURL",
-      "ParameterValue": "None"
-    },
-    {
-      "ParameterKey": "EnableCloudTrail",
-      "ParameterValue": "false"
-    },
-    {
       "ParameterKey": "CloudTrailS3BucketName",
       "ParameterValue": ""
     },
     {
-      "ParameterKey": "EnableConfigService",
-      "ParameterValue": "false"
-    },
-    {
       "ParameterKey": "ConfigS3BucketName",
       "ParameterValue": ""
-    },
-    {
-      "ParameterKey": "ConfigSNSTopicArn",
-      "ParameterValue": "None"
-    },
-    {
-      "ParameterKey": "CofingRulePrefix",
-      "ParameterValue": "None"
-    },
-    {
-      "ParameterKey": "AdminPrincipal",
-      "ParameterValue": "None"
-    },
-    {
-      "ParameterKey": "ACMCertificatesDaysToExpiration",
-      "ParameterValue": 0
-    },
-    {
-      "ParameterKey": "EnableEIPAttachedConfigRule",
-      "ParameterValue": "false"
-    },
-    {
-      "ParameterKey": "EnableEC2VolumeInuseCheckConfigRule",
-      "ParameterValue": "false"
-    },
-    {
-      "ParameterKey": "EnableIAMRootKeyCheckConfigRule",
-      "ParameterValue": "false"
-    },
-    {
-      "ParameterKey": "EnableRootMFAEnabledConfigRule",
-      "ParameterValue": "false"
-    },
-    {
-      "ParameterKey": "EnableRDSPublicAccessCheckConfigRule",
-      "ParameterValue": "false"
-    },
-    {
-      "ParameterKey": "EnableSGOpenOnlyToAuthorizedPortsConfigRule",
-      "ParameterValue": "false"
     }
   ]
