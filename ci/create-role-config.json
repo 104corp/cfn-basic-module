@@ -4,28 +4,12 @@
       "ParameterValue": "ap-northeast-1"
     },
     {
-      "ParameterKey": "SlackWebhookURL",
-      "ParameterValue": "None"
-    },
-    {
       "ParameterKey": "EnableCloudTrail",
       "ParameterValue": "true"
     },
     {
-      "ParameterKey": "CloudTrailS3BucketName",
-      "ParameterValue": ""
-    },
-    {
       "ParameterKey": "EnableConfigService",
       "ParameterValue": "true"
-    },
-    {
-      "ParameterKey": "ConfigS3BucketName",
-      "ParameterValue": ""
-    },
-    {
-      "ParameterKey": "ConfigSNSTopicArn",
-      "ParameterValue": "None"
     },
     {
       "ParameterKey": "CofingRulePrefix",
