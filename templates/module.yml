@@ -99,6 +99,36 @@ Parameters:
     Description: (Optional) Comma-separated list of UDP ports authorized to be open to 0.0.0.0/0. Ranges are defined by a dash; for example, "500,1020-1025".
     Type: String
     Default: '0'
+  EnableVPCFlowLogsEnabledConfigRule:
+    Description: (Optional) enable Checks whether Amazon Virtual Private Cloud flow logs are found and enabled for Amazon VPC.
+    Type: String
+    Default: false
+    AllowedValues: 
+      - true
+      - false
+  VPCFlowLogTrafficType:
+    Description: (Optional) vpc flow log traffic type
+    Type: "String"
+    Default: "None"
+    AllowedValues: ["None","ACCEPT", "REJECT", "ALL"]
+  EnableELBLoggingEnabledConfigRule:
+    Description: (Optional) enable Checks whether the Application Load Balancers and the Classic Load Balancers have logging enabled.
+    Type: String
+    Default: false
+    AllowedValues: 
+      - true
+      - false
+  ELBLoggingS3BucketNames:
+    Description: (Optional) elb logging s3 bucket name
+    Type: "String"
+    Default: "None"
+  EnableDynamodbEncryptionConfigRule:
+    Description: (Optional) enable Checks whether the Amazon DynamoDB tables are encrypted and checks their status. The rule is compliant if the status is enabled or enabling.
+    Type: String
+    Default: false
+    AllowedValues: 
+      - true
+      - false
 
 Conditions: 
   CreateInMainRegion: !Or
@@ -153,9 +183,24 @@ Conditions:
   CreateRDSPublicAccessCheckConfigRule: !And 
     - !Condition CreateConfig
     - !Equals [!Ref EnableRDSPublicAccessCheckConfigRule, true]
-  CreateSGOpenOnlyToAuthorizedPortsCheckConfigRule: !And 
+  CreateSGOpenOnlyToAuthorizedPortsConfigRule: !And 
     - !Condition CreateConfig
     - !Equals [!Ref EnableSGOpenOnlyToAuthorizedPortsConfigRule, true]
+  CreateVPCFlowLogsEnabledConfigRule: !And 
+    - !Condition CreateConfig
+    - !Equals [!Ref EnableVPCFlowLogsEnabledConfigRule, true]
+  HasVPCFlowLogTrafficType: !And
+    - !Condition CreateConfig
+    - !Not [!Equals [!Ref VPCFlowLogTrafficType, "None"]]
+  CreateELBLoggingEnabledConfigRule: !And 
+    - !Condition CreateConfig
+    - !Equals [!Ref EnableELBLoggingEnabledConfigRule, true]
+  HasELBLoggingS3BucketNames: !And
+    - !Condition CreateConfig
+    - !Not [!Equals [!Ref ELBLoggingS3BucketNames, "None"]]
+  CreateDynamodbEncryptionConfigRule: !And 
+    - !Condition CreateConfig
+    - !Equals [!Ref EnableDynamodbEncryptionConfigRule, true]
 
 Resources:
   ## Health Event Notify ##
@@ -548,7 +593,7 @@ Resources:
   SGOpenOnlyToAuthorizedPortsConfigRule:
     Type: "AWS::Config::ConfigRule"
     DependsOn: ConfigRecorder
-    Condition: CreateSGOpenOnlyToAuthorizedPortsCheckConfigRule
+    Condition: CreateSGOpenOnlyToAuthorizedPortsConfigRule
     Properties:
       ConfigRuleName: !If 
                       - HasCofingRulePrefix
@@ -564,3 +609,62 @@ Resources:
       Source:  # required
         Owner: AWS
         SourceIdentifier: VPC_SG_OPEN_ONLY_TO_AUTHORIZED_PORTS
+
+  VPCFlowLogsEnabledConfigRule:
+    Type: "AWS::Config::ConfigRule"
+    DependsOn: ConfigRecorder
+    Condition: CreateVPCFlowLogsEnabledConfigRule
+    Properties:
+      ConfigRuleName: !If 
+                      - HasCofingRulePrefix
+                      - !Sub
+                        - ${CofingRulePrefix}-VPCFlowLogsEnabled
+                        - { CofingRulePrefix: !Ref CofingRulePrefix } 
+                      - !Ref "AWS::NoValue"
+      Description: Checks whether Amazon Virtual Private Cloud flow logs are found and enabled for Amazon VPC.
+      InputParameters: 
+        trafficType: !If [ HasVPCFlowLogTrafficType, !Ref VPCFlowLogTrafficType , !Ref "AWS::NoValue"]
+      Source:  # required
+        Owner: AWS
+        SourceIdentifier: VPC_FLOW_LOGS_ENABLED
+  
+  ELBLoggingEnabledConfigRule:
+    Type: "AWS::Config::ConfigRule"
+    DependsOn: ConfigRecorder
+    Condition: CreateELBLoggingEnabledConfigRule
+    Properties:
+      ConfigRuleName: !If 
+                      - HasCofingRulePrefix
+                      - !Sub
+                        - ${CofingRulePrefix}-VPCFlowLogsEnabled
+                        - { CofingRulePrefix: !Ref CofingRulePrefix } 
+                      - !Ref "AWS::NoValue"
+      Description: Checks whether the Application Load Balancers and the Classic Load Balancers have logging enabled.
+      InputParameters: 
+        s3BucketNames: !If [ HasELBLoggingS3BucketNames, !Ref ELBLoggingS3BucketNames , !Ref "AWS::NoValue"]
+      Scope:
+        ComplianceResourceTypes: 
+          - AWS::ElasticLoadBalancing::LoadBalancer
+          - AWS::ElasticLoadBalancingV2::LoadBalancer
+      Source:  # required
+        Owner: AWS
+        SourceIdentifier: ELB_LOGGING_ENABLED
+
+  DynamodbEncryptionConfigRule:
+    Type: "AWS::Config::ConfigRule"
+    DependsOn: ConfigRecorder
+    Condition: CreateDynamodbEncryptionConfigRule
+    Properties:
+      ConfigRuleName: !If 
+                      - HasCofingRulePrefix
+                      - !Sub
+                        - ${CofingRulePrefix}-DynamodbEncryption
+                        - { CofingRulePrefix: !Ref CofingRulePrefix } 
+                      - !Ref "AWS::NoValue"
+      Description: Checks whether the Amazon DynamoDB tables are encrypted and checks their status. The rule is compliant if the status is enabled or enabling.
+      Scope:
+        ComplianceResourceTypes: 
+          - AWS::DynamoDB::Table
+      Source:  # required
+        Owner: AWS
+        SourceIdentifier: DYNAMODB_TABLE_ENCRYPTION_ENABLED
